@@ -140,7 +140,7 @@ export default function Section02Revelation() {
         </div>
 
         {/* Content Columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
           
           {/* Left Block: Features List / Carousel on Mobile */}
           <div 
@@ -162,7 +162,7 @@ export default function Section02Revelation() {
                     animate={{ 
                       opacity: isInView ? 1 : 0, 
                       x: isInView ? 0 : -30,
-                      borderColor: isSelected ? "transparent" : "rgba(255, 255, 255, 0.05)"
+                      borderColor: isSelected ? feat.color : `${feat.color}44`
                     }}
                     transition={{ 
                       type: "spring",
@@ -172,7 +172,7 @@ export default function Section02Revelation() {
                     }}
                     whileHover={{ 
                       x: 6,
-                      borderColor: isSelected ? "transparent" : "rgba(255, 255, 255, 0.25)",
+                      borderColor: feat.color,
                       backgroundColor: isSelected ? "rgba(23, 23, 23, 0.7)" : "rgba(14, 14, 14, 0.5)"
                     }}
                     onClick={() => handleCardClick(feat, index)}
@@ -268,46 +268,40 @@ export default function Section02Revelation() {
                         {feat.sub}
                       </p>
                       
-                      {/* Accordéon ultra-fluide avec AnimatePresence sans saut de mise en page */}
-                      <AnimatePresence initial={false}>
-                        {isSelected && (
-                          <motion.div 
-                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                            animate={{ opacity: 1, height: "auto", marginTop: 12 }}
-                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }} // Accordéon légèrement plus rapide
-                            className="overflow-hidden"
-                          >
-                            <div 
-                              className="text-xs font-mono tracking-wider flex items-center gap-2.5 bg-black/50 px-3 py-1.5 rounded-lg border border-neutral-900 w-fit"
+                      {/* Détails toujours visibles et colorés */}
+                      <div className="mt-3 overflow-hidden">
+                        <div 
+                          className="text-xs font-mono tracking-wider flex items-center gap-2.5 bg-black/55 px-3 py-1.5 rounded-lg border transition-all duration-300 w-fit"
+                          style={{ 
+                            color: feat.color,
+                            textShadow: `0 0 8px ${feat.color}40`,
+                            boxShadow: `inset 0 0 10px ${feat.color}05`,
+                            borderColor: isSelected ? feat.color : `${feat.color}33`,
+                            opacity: isSelected ? 1 : 0.7
+                          }}
+                        >
+                          {/* Voyant LED néon pulsant */}
+                          <div className="relative flex h-2 w-2">
+                            {isSelected && (
+                              <span 
+                                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                                style={{ backgroundColor: feat.color }}
+                              />
+                            )}
+                            <span 
+                              className="relative inline-flex rounded-full h-2 w-2"
                               style={{ 
-                                color: feat.color,
-                                textShadow: `0 0 8px ${feat.color}40`,
-                                boxShadow: `inset 0 0 10px ${feat.color}05`
+                                backgroundColor: feat.color,
+                                boxShadow: isSelected ? `0 0 10px ${feat.color}, 0 0 20px ${feat.color}` : `0 0 5px ${feat.color}`
                               }}
-                            >
-                              {/* Voyant LED néon pulsant */}
-                              <div className="relative flex h-2 w-2">
-                                <span 
-                                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                                  style={{ backgroundColor: feat.color }}
-                                />
-                                <span 
-                                  className="relative inline-flex rounded-full h-2 w-2"
-                                  style={{ 
-                                    backgroundColor: feat.color,
-                                    boxShadow: `0 0 10px ${feat.color}, 0 0 20px ${feat.color}`
-                                  }}
-                                />
-                              </div>
-                              
-                              <span className="font-semibold uppercase text-[10px] tracking-widest opacity-90 flex items-center gap-1">
-                                ⚡ Active : <span className="text-white font-normal capitalize tracking-normal">{feat.positionLabel}</span>
-                              </span>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                            />
+                          </div>
+                          
+                          <span className="font-semibold uppercase text-[10px] tracking-widest opacity-90 flex items-center gap-1">
+                            ⚡ Active : <span className="text-white font-normal capitalize tracking-normal">{feat.positionLabel}</span>
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </motion.div>
                 </div>
@@ -316,7 +310,7 @@ export default function Section02Revelation() {
           </div>
 
           {/* Right Block: High-Tech Interactive Snowboard Mockup */}
-          <div className="order-1 lg:order-2 lg:col-span-7 flex flex-col justify-center items-center gap-8 relative min-h-[600px] pb-16">
+          <div className="order-1 lg:order-2 lg:col-span-7 flex flex-col justify-center items-center gap-4 lg:gap-8 relative min-h-[500px] lg:min-h-[600px] pb-4 lg:pb-16">
             
 
 
@@ -521,7 +515,7 @@ export default function Section02Revelation() {
 
             {/* Horizontal Chroma Slider Controls (Now in document flow, not absolute) */}
             <div 
-              className="relative z-30 bg-black/85 backdrop-blur-md px-6 py-4 rounded-3xl border transition-all duration-300 flex flex-col items-center gap-3 w-full max-w-[320px] mb-8"
+              className="relative z-30 bg-black/85 backdrop-blur-md px-6 py-4 rounded-3xl border transition-all duration-300 flex flex-col items-center gap-3 w-full max-w-[320px] mb-2 lg:mb-8"
               style={{
                 borderColor: `${activeColor}20`,
                 boxShadow: `0 15px 40px -15px rgba(0,0,0,0.8), 0 0 25px ${activeColor}15, inset 0 0 15px ${activeColor}05`
