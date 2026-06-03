@@ -240,9 +240,9 @@ export default function Section05MobileApp() {
               initial={{ rotateY: -15, rotateX: 10, scale: 1, y: 30, opacity: 0 }}
               animate={isInView 
                 ? { 
-                    rotateY: mousePos.x * 40 - 5, // Dynamic gyro tilt based on mouse position
-                    rotateX: -mousePos.y * 40 + 5, 
-                    scale: isHovered ? 1.05 : 1, // Merge scale dynamically with dynamic tilt to avoid overrides
+                    rotateY: typeof window !== "undefined" && window.innerWidth >= 1024 ? mousePos.x * 40 - 5 : 0,
+                    rotateX: typeof window !== "undefined" && window.innerWidth >= 1024 ? -mousePos.y * 40 + 5 : 0, 
+                    scale: isHovered && typeof window !== "undefined" && window.innerWidth >= 1024 ? 1.05 : 1, 
                     y: 0, 
                     opacity: 1 
                   } 
@@ -313,8 +313,8 @@ export default function Section05MobileApp() {
                       {/* Interactive Visual Element: SVG Snowboard with bluetooth waves */}
                       <div className="w-full h-36 flex items-center justify-center relative overflow-hidden bg-black/40 rounded-2xl border border-neutral-800/50">
                         
-                        {/* Radiating wave rings behind the board (Bluetooth/Energy pulse) */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                        {/* Radiating wave rings behind the board (Bluetooth/Energy pulse) - Desktop only */}
+                        <div className="hidden lg:flex absolute inset-0 flex items-center justify-center pointer-events-none z-0">
                           <motion.div 
                             animate={{ scale: [0.8, 1.8, 0.8], opacity: [0.3, 0, 0.3] }}
                             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
