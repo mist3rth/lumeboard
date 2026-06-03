@@ -398,7 +398,7 @@ export default function Section02Revelation() {
                       className="opacity-[0.95]"
                     />
 
-                    {/* Left Flowing Energy Pulse */}
+                    {/* Left Flowing Energy Pulse (Desktop only) */}
                     <motion.path
                       d="M 40,22 C 34,35 27,48 29,65 C 31,85 38,150 38,250 C 38,350 31,415 29,435 C 27,452 34,465 40,478"
                       fill="none"
@@ -408,7 +408,7 @@ export default function Section02Revelation() {
                       strokeDasharray="50 250"
                       animate={{ strokeDashoffset: [300, -300] }}
                       transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
-                      className="opacity-90"
+                      className="hidden lg:block opacity-90"
                       style={{
                         filter: `drop-shadow(0 0 6px ${activeColor})`
                       }}
@@ -448,7 +448,7 @@ export default function Section02Revelation() {
                       className="opacity-[0.95]"
                     />
 
-                    {/* Right Flowing Energy Pulse */}
+                    {/* Right Flowing Energy Pulse (Desktop only) */}
                     <motion.path
                       d="M 60,22 C 66,35 73,48 71,65 C 69,85 62,150 62,250 C 62,350 69,415 71,435 C 73,452 66,465 60,478"
                       fill="none"
@@ -458,7 +458,7 @@ export default function Section02Revelation() {
                       strokeDasharray="50 250"
                       animate={{ strokeDashoffset: [300, -300] }}
                       transition={{ duration: 3.5, repeat: Infinity, ease: "linear" }}
-                      className="opacity-90"
+                      className="hidden lg:block opacity-90"
                       style={{
                         filter: `drop-shadow(0 0 6px ${activeColor})`
                       }}
