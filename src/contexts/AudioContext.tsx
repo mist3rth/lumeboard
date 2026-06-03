@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { log } from "../utils/logger";
+import { getAssetPath } from "../utils/assets";
 
 interface AudioContextType {
   soundEnabled: boolean;
@@ -30,7 +31,7 @@ export const AudioImmersionProvider = ({ children }: { children: ReactNode }) =>
         let { context, windFilter, windGain, noiseSource, audioTrack } = audioState;
         
         if (!audioTrack) {
-          audioTrack = new Audio("/ambient_wind.mp3");
+          audioTrack = new Audio(getAssetPath("/ambient_wind.mp3"));
           audioTrack.loop = true;
           audioTrack.volume = 0.35;
         }

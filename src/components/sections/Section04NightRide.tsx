@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
 import { Sparkles, Compass, Eye } from "lucide-react";
 import useVideoController from "../../hooks/useVideoController";
+import { getAssetPath } from "../../utils/assets";
 
 export default function Section04NightRide() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,7 +31,7 @@ export default function Section04NightRide() {
         loop
         muted
         playsInline
-        src="/s4.webm"
+        src={getAssetPath("/s4.webm")}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-transparent to-[#030303] pointer-events-none z-0" />
       <div className="absolute inset-0 bg-black/40 pointer-events-none z-0" />
@@ -89,7 +90,7 @@ export default function Section04NightRide() {
             >
               {/* Image from public/bloc1.webp */}
               <img 
-                src="/bloc1.webp" 
+                src={getAssetPath("/bloc1.webp")} 
                 alt="Traces LED dans la neige" 
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none ${activeCard === 1 ? 'scale-105 opacity-100 brightness-110' : 'opacity-60'}`}
                 loading="lazy"
@@ -119,7 +120,7 @@ export default function Section04NightRide() {
             >
               {/* Image from public/bloc2.webp */}
               <img 
-                src="/bloc2.webp" 
+                src={getAssetPath("/bloc2.webp")} 
                 alt="Vues aériennes" 
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none ${activeCard === 2 ? 'scale-105 opacity-100 brightness-110' : 'opacity-60'}`}
                 loading="lazy"
@@ -148,7 +149,7 @@ export default function Section04NightRide() {
             >
               {/* Image from public/bloc3.webp */}
               <img 
-                src="/bloc3.webp" 
+                src={getAssetPath("/bloc3.webp")} 
                 alt="Groupe de riders" 
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none ${activeCard === 3 ? 'scale-105 opacity-100 brightness-110' : 'opacity-60'}`}
                 loading="lazy"

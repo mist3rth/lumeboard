@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView } from "motion/react";
 import { Sliders, Cpu, Battery, Layers } from "lucide-react";
+import { getAssetPath } from "../../utils/assets";
 
 export default function Section03TechDetails() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -129,7 +130,7 @@ export default function Section03TechDetails() {
 
               {/* Board image */}
               <img
-                src="/board.webp"
+                src={getAssetPath("/board.webp")}
                 alt="LumeBoard coupe technologique"
                 className="absolute inset-0 w-full h-full object-contain z-10 transition-all duration-700"
                 style={{ filter: `drop-shadow(0 0 40px ${selectedPoint !== null ? points[selectedPoint].layerColor + "60" : "#00f5ff20"})` }}

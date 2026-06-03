@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { ArrowUpRight, Cpu, Sparkles } from "lucide-react";
+import { getAssetPath } from "../../utils/assets";
 
 interface RangeProps {
   onPreOrderClick: (modelName: string, price: number) => void;
@@ -149,7 +150,7 @@ export default function Section07ProductRange({ onPreOrderClick }: RangeProps) {
                     className="relative z-10 w-24 h-56 flex items-center justify-center pointer-events-none select-none filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.7)]"
                   >
                     <img 
-                      src={board.image} 
+                      src={getAssetPath(board.image)} 
                       alt={board.name} 
                       className="w-full h-full object-contain"
                       loading="lazy"

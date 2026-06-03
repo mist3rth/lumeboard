@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Sparkles, BatteryCharging, Smartphone, Eye } from "lucide-react";
+import { getAssetPath } from "../../utils/assets";
 
 export default function Section02Revelation() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -337,7 +338,7 @@ export default function Section02Revelation() {
                   {/* Board Deck Image (z-10 inside wrapper) */}
                   <div className="absolute inset-0 flex items-center justify-center z-10">
                     <img 
-                      src="/board.webp" 
+                      src={getAssetPath("/board.webp")} 
                       alt="LumeBoard High-Tech Snowboard" 
                       className="w-full h-full object-contain transition-all duration-300"
                       style={{

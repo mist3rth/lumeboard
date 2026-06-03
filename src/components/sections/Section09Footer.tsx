@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Instagram, Youtube, Compass, ArrowUp, Send } from "lucide-react";
 import useVideoController from "../../hooks/useVideoController";
+import { getAssetPath } from "../../utils/assets";
 
 interface FooterProps {
   onNavClick: (anchor: string) => void;
@@ -210,7 +211,7 @@ export default function Section09Footer({ onNavClick, onContactClick }: FooterPr
         {isNearFooter && (
           <video
             ref={videoRef}
-            src="/footer.webm"
+            src={getAssetPath("/footer.webm")}
             autoPlay
             loop
             muted

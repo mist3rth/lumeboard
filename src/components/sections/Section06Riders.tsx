@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Quote, Cpu } from "lucide-react";
+import { getAssetPath } from "../../utils/assets";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -158,7 +159,7 @@ export default function Section06Riders() {
                 {/* Rider Background image with parallax scale effect */}
                 <div className="absolute inset-0 z-0 overflow-hidden">
                   <img 
-                    src={rider.image} 
+                    src={getAssetPath(rider.image)} 
                     alt={rider.name}
                     className="w-full h-full object-cover opacity-35 select-none pointer-events-none"
                     loading="lazy"
@@ -240,7 +241,7 @@ export default function Section06Riders() {
                 {/* Mobile image */}
                 <div className="absolute inset-0 z-0">
                   <img 
-                    src={rider.image} 
+                    src={getAssetPath(rider.image)} 
                     alt={rider.name}
                     className="w-full h-full object-cover opacity-65 select-none pointer-events-none"
                     loading="lazy"

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import useVideoController from "../../hooks/useVideoController";
+import { getAssetPath } from "../../utils/assets";
 
 interface HeroProps {
   onDiscoverClick: () => void;
@@ -40,7 +41,7 @@ export default function Section00Hero({ onDiscoverClick, onPreOrderClick }: Hero
         loop
         muted
         playsInline
-        src="/hero_video.webm"
+        src={getAssetPath("/hero_video.webm")}
         id="hero-background-video"
       />
 
