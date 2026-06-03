@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Sparkles, BatteryCharging, Smartphone, Eye } from "lucide-react";
 import { getAssetPath } from "../../utils/assets";
@@ -11,14 +11,32 @@ export default function Section02Revelation() {
   const [sliderHue, setSliderHue] = useState<number>(145); // Approx hue for rgb(40, 210, 114)
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const cardWidthRef = useRef<number>(320);
+
+  // Mesurer la largeur de la carte une seule fois et sur resize pour éviter les recalculs forcés
+  useEffect(() => {
+    const measureCard = () => {
+      if (scrollContainerRef.current) {
+        const card = scrollContainerRef.current.querySelector("[id^='feature-card-']");
+        if (card) {
+          cardWidthRef.current = card.clientWidth;
+        }
+      }
+    };
+    // Délai court pour s'assurer que le rendu initial est fait
+    const timer = setTimeout(measureCard, 100);
+    window.addEventListener("resize", measureCard);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", measureCard);
+    };
+  }, []);
 
   const handleScroll = () => {
     if (!scrollContainerRef.current || window.innerWidth >= 1024) return;
     const container = scrollContainerRef.current;
     const scrollLeft = container.scrollLeft;
-    const card = container.querySelector("[id^='feature-card-']");
-    if (!card) return;
-    const cardWidth = card.clientWidth;
+    const cardWidth = cardWidthRef.current;
     const gap = 24; // gap-6 est de 24px (1.5rem)
     const index = Math.round(scrollLeft / (cardWidth + gap));
     if (index >= 0 && index < features.length) {
@@ -42,9 +60,7 @@ export default function Section02Revelation() {
 
     if (scrollContainerRef.current && window.innerWidth < 1024) {
       const container = scrollContainerRef.current;
-      const card = container.querySelector("[id^='feature-card-']");
-      if (!card) return;
-      const cardWidth = card.clientWidth;
+      const cardWidth = cardWidthRef.current;
       const gap = 24;
       container.scrollTo({
         left: index * (cardWidth + gap),

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Sliders, RefreshCw, Activity, Music, Battery, Share2, Smartphone } from "lucide-react";
 
@@ -109,14 +109,31 @@ export default function Section05MobileApp() {
   ];
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const cardWidthRef = useRef<number>(280);
+
+  // Mettre en cache la largeur du bouton de la liste pour éviter Forced Reflow au scroll
+  useEffect(() => {
+    const measureCard = () => {
+      if (scrollContainerRef.current) {
+        const card = scrollContainerRef.current.querySelector("button");
+        if (card) {
+          cardWidthRef.current = card.clientWidth;
+        }
+      }
+    };
+    const timer = setTimeout(measureCard, 100);
+    window.addEventListener("resize", measureCard);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", measureCard);
+    };
+  }, []);
 
   const handleScroll = () => {
     if (!scrollContainerRef.current || window.innerWidth >= 1024) return;
     const container = scrollContainerRef.current;
     const scrollLeft = container.scrollLeft;
-    const card = container.querySelector("button");
-    if (!card) return;
-    const cardWidth = card.clientWidth;
+    const cardWidth = cardWidthRef.current;
     const gap = 16; // gap-4 est de 16px
     const index = Math.round(scrollLeft / (cardWidth + gap));
     if (index >= 0 && index < functionalities.length && index !== activeFunc) {
@@ -128,9 +145,7 @@ export default function Section05MobileApp() {
     setActiveFunc(id);
     if (scrollContainerRef.current && window.innerWidth < 1024) {
       const container = scrollContainerRef.current;
-      const card = container.querySelector("button");
-      if (!card) return;
-      const cardWidth = card.clientWidth;
+      const cardWidth = cardWidthRef.current;
       const gap = 16;
       container.scrollTo({
         left: id * (cardWidth + gap),
