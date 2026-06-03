@@ -1,0 +1,6 @@
+{
+  "name": "LUMEBOARD Landing Page",
+  "description": "An immersive, cinematic luxury snowboard landing page featuring glowing LED previews, interactive schematic blueprints, live pre-order flows, and dynamic audio-sweep simulations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
