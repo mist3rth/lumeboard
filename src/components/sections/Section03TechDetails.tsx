@@ -170,7 +170,7 @@ export default function Section03TechDetails() {
                   strokeDasharray="6 4"
                   style={{ transition: "opacity 0.4s" }}
                 />
-                {/* Pulse énergie — Rail GAUCHE (descend) */}
+                {/* Pulse énergie — Rail GAUCHE (Desktop uniquement) */}
                 <motion.path
                   d="M 33,28 C 28,50 24,80 25,120 C 26,180 28,280 25,340 C 24,380 28,410 33,430"
                   fill="none" stroke="#00F5FF" strokeWidth="4" strokeLinecap="round"
@@ -178,8 +178,9 @@ export default function Section03TechDetails() {
                   animate={selectedPoint === 0 ? { strokeDashoffset: [230, -230] } : { strokeDashoffset: 0 }}
                   transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
                   style={{ filter: "drop-shadow(0 0 8px #00F5FF)" }}
+                  className="hidden lg:block"
                 />
-                {/* Pulse énergie — Rail DROIT (remonte, sens inverse) */}
+                {/* Pulse énergie — Rail DROIT (Desktop uniquement) */}
                 <motion.path
                   d="M 67,28 C 72,50 76,80 75,120 C 74,180 72,280 75,340 C 76,380 72,410 67,430"
                   fill="none" stroke="#00F5FF" strokeWidth="4" strokeLinecap="round"
@@ -187,6 +188,7 @@ export default function Section03TechDetails() {
                   animate={selectedPoint === 0 ? { strokeDashoffset: [-230, 230] } : { strokeDashoffset: 0 }}
                   transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
                   style={{ filter: "drop-shadow(0 0 8px #00F5FF)" }}
+                  className="hidden lg:block"
                 />
               </motion.svg>
 
