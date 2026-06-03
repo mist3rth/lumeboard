@@ -210,12 +210,20 @@ export default function Section02Revelation() {
                           transition={{ duration: 0.15, ease: "easeOut" }} // Disparition et apparition ultra-rapides
                           className="absolute inset-0 pointer-events-none rounded-2xl z-0"
                         >
-                          {/* Calque principal de turbulence électrique */}
+                          {/* Calque principal de turbulence électrique (Desktop uniquement) */}
                           <div 
-                            className="absolute inset-0 rounded-2xl pointer-events-none"
+                            className="hidden lg:block absolute inset-0 rounded-2xl pointer-events-none"
                             style={{
                               border: `2.5px solid ${feat.color}`,
                               filter: "url(#electric-turbulence)",
+                              margin: "-1px"
+                            }}
+                          />
+                          {/* Bordure simple et fluide (Mobile/Tablette) */}
+                          <div 
+                            className="block lg:hidden absolute inset-0 rounded-2xl pointer-events-none"
+                            style={{
+                              border: `2px solid ${feat.color}`,
                               margin: "-1px"
                             }}
                           />
