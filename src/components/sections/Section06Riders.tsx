@@ -1,68 +1,19 @@
 import { useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { Quote, Cpu } from "lucide-react";
 import { getAssetPath } from "../../utils/assets";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function Section06Riders() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const glowRef = useRef<HTMLDivElement>(null);
+  
+  // Capturer la progression du scroll vertical du parent
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+  });
 
-  // GSAP Timeline pour animer le slide horizontal au scroll avec Pinning natif
-  useGSAP(() => {
-    if (!containerRef.current || !cardsRef.current) return;
-
-    // Timeline synchrone avec le défilement vertical du wrapper
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 1.2, // Ajoute une inertie de 1.2s pour lisser les crans de la molette de souris
-      }
-    });
-
-    // Déplacement horizontal : se termine à 85% (0.85) pour la pause stable
-    tl.to(cardsRef.current, {
-      x: "-52vw",
-      ease: "none",
-      duration: 0.85,
-      force3D: true, // Force l'accélération matérielle (GPU)
-    }, 0);
-
-    // Fade in dynamique de l'ambiance lumineuse
-    if (glowRef.current) {
-      tl.fromTo(glowRef.current, 
-        { opacity: 0.8 },
-        { opacity: 1, ease: "none", duration: 0.8 },
-        0
-      );
-    }
-
-    // Gestion propre de will-change: transform uniquement pendant le scroll actif dans le viewport
-    ScrollTrigger.create({
-      trigger: containerRef.current,
-      start: "top bottom",
-      end: "bottom top",
-      onEnter: () => {
-        if (cardsRef.current) cardsRef.current.style.willChange = "transform";
-      },
-      onLeave: () => {
-        if (cardsRef.current) cardsRef.current.style.willChange = "auto";
-      },
-      onEnterBack: () => {
-        if (cardsRef.current) cardsRef.current.style.willChange = "transform";
-      },
-      onLeaveBack: () => {
-        if (cardsRef.current) cardsRef.current.style.willChange = "auto";
-      }
-    });
-
-  }, { scope: containerRef });
+  // Mapper le scroll vertical [0, 1] sur la translation horizontale du container de cartes
+  // On décale de 0% à environ -52% de sa largeur pour afficher toutes les fiches
+  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-52%"]);
 
   const riders = [
     {
@@ -121,15 +72,14 @@ export default function Section06Riders() {
   return (
     <div 
       ref={containerRef} 
-      className="relative h-[180vh] md:h-[230vh] bg-black"
-      id="testi-wrapper"
+      className="relative h-[200vh] bg-black"
+      id="riders-section-wrapper"
     >
-      {/* Conteneur Sticky bloqué de manière native par le navigateur (zéro lag) */}
+      {/* Conteneur Sticky bloqué de manière native par le navigateur */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden bg-[#030303] z-10">
         
         {/* Lueur d'ambiance dynamique */}
         <div 
-          ref={glowRef}
           className="absolute w-[450px] h-[450px] rounded-full bg-[#8B00FF]/5 filter blur-[150px] top-[30%] left-[50%] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
         />
 
@@ -147,14 +97,16 @@ export default function Section06Riders() {
 
         {/* --- DESKTOP INTERACTION: STICKY SCROLL HORIZONTAL (md et supérieur) --- */}
         <div className="hidden md:block relative w-full overflow-hidden select-none">
-          <div 
-            ref={cardsRef}
+          <motion.div 
+            style={{ x }}
             className="flex gap-8 px-16 w-[150vw]"
           >
             {riders.map((rider) => (
               <div
                 key={rider.id}
-                className={`relative w-[46vw] h-[55vh] min-h-[420px] aspect-[16/10] bg-neutral-950/90 border ${rider.borderColor} rounded-[36px] overflow-hidden flex flex-col justify-end p-8 md:p-10 shadow-2xl`}
+                tabIndex={0}
+                className={`relative w-[46vw] h-[55vh] min-h-[420px] aspect-[16/10] bg-neutral-950/90 border ${rider.borderColor} rounded-[36px] overflow-hidden flex flex-col justify-end p-8 md:p-10 shadow-2xl focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black`}
+                aria-label={`Témoignage de ${rider.name}, ${rider.role}`}
               >
                 {/* Rider Background image with parallax scale effect */}
                 <div className="absolute inset-0 z-0 overflow-hidden">
@@ -227,16 +179,18 @@ export default function Section06Riders() {
                 </div>
               </div>
             ))}
-          </div>
+          </motion.div>
         </div>
 
-        {/* --- MOBILE RESPONSIVE LAYOUT: VERTICAL STACK / CAROUSEL (sm et inférieur) --- */}
+        {/* --- MOBILE RESPONSIVE LAYOUT: HORIZONTAL SCROLL OR STACK (sm et inférieur) --- */}
         <div className="block md:hidden overflow-x-auto w-full px-6 select-none scrollbar-none py-4">
           <div className="flex gap-6 w-[270vw]">
             {riders.map((rider) => (
               <div
                 key={rider.id}
-                className={`relative w-[85vw] h-[50vh] min-h-[380px] bg-neutral-950/90 border ${rider.borderColor} rounded-[28px] overflow-hidden flex flex-col justify-end p-6 shadow-xl`}
+                tabIndex={0}
+                className={`relative w-[85vw] h-[50vh] min-h-[380px] bg-neutral-950/90 border ${rider.borderColor} rounded-[28px] overflow-hidden flex flex-col justify-end p-6 shadow-xl focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black`}
+                aria-label={`Témoignage de ${rider.name}, ${rider.role}`}
               >
                 {/* Mobile image */}
                 <div className="absolute inset-0 z-0">

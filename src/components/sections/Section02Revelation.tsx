@@ -176,6 +176,15 @@ export default function Section02Revelation() {
                       backgroundColor: isSelected ? "rgba(23, 23, 23, 0.7)" : "rgba(14, 14, 14, 0.5)"
                     }}
                     onClick={() => handleCardClick(feat, index)}
+                    tabIndex={0}
+                    role="button"
+                    aria-pressed={isSelected}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleCardClick(feat, index);
+                      }
+                    }}
                     style={isSelected ? {
                       boxShadow: [
                         `0 20px 60px -10px ${feat.color}55`,
@@ -184,7 +193,7 @@ export default function Section02Revelation() {
                         `0 15px 40px rgba(0,0,0,0.8)`
                       ].join(", ")
                     } : {}}
-                    className={`p-6 rounded-2xl border cursor-pointer flex gap-4 relative transition-shadow duration-500 w-full ${
+                    className={`p-6 rounded-2xl border cursor-pointer flex gap-4 relative transition-shadow duration-500 w-full focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black ${
                       isSelected 
                         ? "bg-neutral-900/60 z-10" 
                         : "bg-[#090909]/40 hover:bg-[#0e0e0e]/50 z-10"
@@ -527,7 +536,7 @@ export default function Section02Revelation() {
                   setActiveColor(`hsl(${hue}, 100%, 50%)`);
                 }}
                 aria-label="Ajuster la teinte des LED de la planche"
-                className="w-full h-2 rounded-full appearance-none outline-none cursor-pointer 
+                className="w-full h-2 rounded-full appearance-none outline-none cursor-pointer focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black
                   [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
                   [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(255,255,255,0.8)]
                   [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-none"

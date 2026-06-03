@@ -161,7 +161,7 @@ export default function Navbar({ onNavClick, onPreOrderClick }: NavbarProps) {
                     e.preventDefault();
                     onNavClick(item.id);
                   }}
-                  className={`text-neutral-400 hover:text-white transition-all duration-300 text-xs font-technical tracking-wide px-4 py-1.5 relative z-10 flex items-center justify-center`}
+                  className={`text-neutral-400 hover:text-white transition-all duration-300 text-xs font-technical tracking-wide px-4 py-1.5 relative z-10 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-neutral-900 rounded-full`}
                   style={{
                     color: isActive ? "#FFFFFF" : undefined,
                   }}
