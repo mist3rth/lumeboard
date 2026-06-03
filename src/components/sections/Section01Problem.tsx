@@ -3,6 +3,7 @@ import { motion, useInView } from "motion/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { getAssetPath } from "../../utils/assets";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -126,7 +127,7 @@ export default function Section01Problem() {
               className="relative w-full max-w-[500px] h-[320px] md:h-[420px] bg-neutral-950 border border-neutral-900/80 rounded-[32px] overflow-hidden group shadow-2xl transition-all duration-700 hover:border-[#00F5FF]/60 hover:shadow-[0_0_45px_rgba(0,245,255,0.3)] cursor-pointer"
             >
               <img 
-                src="/hero_image.webp" 
+                src={getAssetPath("/hero_image.webp")} 
                 alt="Snowboarder climbing mountain in the dark" 
                 className="absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none opacity-80"
                 referrerPolicy="no-referrer"
