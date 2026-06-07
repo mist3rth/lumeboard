@@ -526,6 +526,8 @@ export default function Section02Revelation() {
                     <img 
                       src={getAssetPath("/board.webp")} 
                       alt="LumeBoard High-Tech Snowboard" 
+                      width={220}
+                      height={520}
                       className="w-full h-full object-contain transition-all duration-300"
                       style={{
                         filter: `drop-shadow(0 0 35px ${activeColor})`

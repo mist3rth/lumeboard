@@ -95,3 +95,21 @@ Le composant `<SEO />` met à jour de façon dynamique le titre et la meta-descr
 ### B. Accessibilité Clavier (WCAG AA)
 - Les boutons interactifs d'illustration (comme les hotspots ou le slider de couleur) disposent de styles de focus et d'une prise en charge clavier complète.
 - L'utilisation de balises HTML5 sémantiques assure une parfaite compatibilité avec les technologies d'assistance et lecteurs d'écran.
+
+---
+
+## ⚡ 5. Stratégie de Caching & Service Worker
+
+Afin de contourner la politique de cache par défaut de GitHub Pages (TTL de 10 minutes), un Service Worker est déployé à la racine (`public/sw.js`).
+
+### A. Stratégie de Cache Double
+1. **Cache-First (Ressources Statiques Lourdes) :**
+   - Cibles : Vidéos (`.webm`), bandes sonores (`.mp3`), images (`.webp`) et polices (`.ttf`).
+   - Fonctionnement : Le Service Worker intercepte la requête, vérifie si l'asset est en cache. Si oui, il le renvoie directement. Sinon, il le télécharge, le stocke dans le Cache Storage et le renvoie.
+2. **Stale-While-Revalidate (Bundles & Code) :**
+   - Cibles : Scripts JS et fichiers CSS générés par Vite.
+   - Fonctionnement : Le Service Worker sert instantanément la version en cache, mais lance en parallèle une requête réseau pour télécharger la version la plus récente et mettre à jour le cache en arrière-plan.
+
+### B. Gestion des Mises à Jour & Cycle de Vie
+Le cache utilise un nommage versionné (ex: `lumeboard-cache-v1`). Lors de l'activation d'un nouveau Service Worker (après déploiement d'une mise à jour), les anciens caches obsolètes sont automatiquement purgés.
+L'enregistrement est géré de façon asynchrone dans `src/main.tsx` lors du chargement de l'application.

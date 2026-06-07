@@ -61,6 +61,7 @@ L'objectif du site web est de créer une expérience immersive premium "Wow" à 
 - Optimisation des formats d'image : utilisation de `board.webp` (WebP léger) pour un chargement rapide.
 - Hiérarchie saine des balises de titres (un unique `<h1>` sur la page Hero, `<h2>` pour chaque section successive).
 - Balises méta SEO complètes et données structurées JSON-LD intégrées pour optimiser l'indexation sur les moteurs de recherche.
+- Mise en cache persistante et intelligente : Intégration d'un Service Worker exploitant le Cache Storage pour contourner la limite de Cache-Control (10 min) de GitHub Pages. Les fichiers médias (.webm, .mp3, .webp) et polices (.ttf) utilisent une stratégie Cache-First, tandis que les scripts et feuilles de style compilés utilisent une stratégie Stale-While-Revalidate.
 
 ---
 
@@ -70,3 +71,4 @@ L'objectif du site web est de créer une expérience immersive premium "Wow" à 
 3. Le site web compile correctement avec `npm run build` sans erreur TypeScript.
 4. Le site est entièrement accessible au clavier.
 5. La structure sémantique SEO est 100 % valide.
+6. Le Service Worker s'enregistre avec succès et intercepte les requêtes réseau pour servir les assets statiques lourds depuis le cache.

@@ -189,6 +189,8 @@ export default function Section07ProductRange({ onPreOrderClick }: RangeProps) {
                           <img 
                             src={getAssetPath(board.image)} 
                             alt={board.name} 
+                            width={96}
+                            height={224}
                             className="w-full h-full object-contain"
                             loading="lazy"
                             decoding="async"
@@ -332,6 +334,8 @@ export default function Section07ProductRange({ onPreOrderClick }: RangeProps) {
                       <img 
                         src={getAssetPath(board.image)} 
                         alt={board.name} 
+                        width={96}
+                        height={224}
                         className="w-full h-full object-contain"
                         loading="lazy"
                         decoding="async"

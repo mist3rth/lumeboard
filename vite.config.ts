@@ -17,15 +17,19 @@ export default defineConfig(() => {
         output: {
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              if (
-                id.includes('react') || 
-                id.includes('react-dom') || 
-                id.includes('gsap') || 
-                id.includes('motion')
-              ) {
-                return 'vendor';
+              if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) {
+                return 'vendor-react';
               }
-              return 'modules';
+              if (id.includes('gsap') || id.includes('@gsap/react')) {
+                return 'vendor-gsap';
+              }
+              if (id.includes('motion')) {
+                return 'vendor-motion';
+              }
+              if (id.includes('blossom-carousel')) {
+                return 'vendor-carousel';
+              }
+              return 'vendor-libs';
             }
           }
         }

@@ -174,6 +174,8 @@ export default function Section03TechDetails() {
               <img
                 src={getAssetPath("/board.webp")}
                 alt="LumeBoard coupe technologique"
+                width={200}
+                height={540}
                 className="absolute inset-0 w-full h-full object-contain z-10 transition-all duration-700"
                 style={{ filter: `drop-shadow(0 0 40px ${selectedPoint !== null ? points[selectedPoint].layerColor + "60" : "#00f5ff20"})` }}
               />

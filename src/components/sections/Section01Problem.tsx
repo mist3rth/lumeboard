@@ -153,6 +153,8 @@ export default function Section01Problem() {
               <img 
                 src={getAssetPath("/hero_image.webp")} 
                 alt="Snowboarder climbing mountain in the dark" 
+                width={500}
+                height={420}
                 className="absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none opacity-80"
                 referrerPolicy="no-referrer"
               />

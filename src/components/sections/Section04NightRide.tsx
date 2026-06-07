@@ -92,6 +92,8 @@ export default function Section04NightRide() {
               <img 
                 src={getAssetPath("/bloc1.webp")} 
                 alt="Traces LED dans la neige" 
+                width={640}
+                height={240}
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none ${activeCard === 1 ? 'scale-105 opacity-100 brightness-110' : 'opacity-60'}`}
                 loading="lazy"
                 decoding="async"
@@ -122,6 +124,8 @@ export default function Section04NightRide() {
               <img 
                 src={getAssetPath("/bloc2.webp")} 
                 alt="Vues aériennes" 
+                width={320}
+                height={220}
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none ${activeCard === 2 ? 'scale-105 opacity-100 brightness-110' : 'opacity-60'}`}
                 loading="lazy"
                 decoding="async"
@@ -151,6 +155,8 @@ export default function Section04NightRide() {
               <img 
                 src={getAssetPath("/bloc3.webp")} 
                 alt="Groupe de riders" 
+                width={320}
+                height={220}
                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none ${activeCard === 3 ? 'scale-105 opacity-100 brightness-110' : 'opacity-60'}`}
                 loading="lazy"
                 decoding="async"

@@ -46,5 +46,11 @@
 - [x] Section 05 : Remplacement de la grille 2 colonnes par un conteneur flex horizontal scrollable sur mobile avec synchronisation bidirectionnelle.
 - [x] Section 02 : Remplacement de la liste verticale par un conteneur flex horizontal scrollable sur mobile avec synchronisation bidirectionnelle (changement de couleur et de lueur du snowboard en swipant/cliquant).
 
+## ⚡ Phase 8 : Optimisation du Cache (Service Worker)
+- [x] Création des spécifications techniques de performance dans `PRD.md` et `ARCHITECTURE.md`.
+- [/] Implémentation du Service Worker dans `public/sw.js` (stratégie Cache-First pour médias/polices, Stale-While-Revalidate pour JS/CSS).
+- [ ] Enregistrement du Service Worker dans `src/main.tsx`.
+- [ ] Validation de la compilation du build de production et du fonctionnement.
+
 
 

@@ -139,6 +139,8 @@ export default function Section06Riders() {
                   <img 
                     src={getAssetPath(rider.image)} 
                     alt={rider.name}
+                    width={640}
+                    height={400}
                     className="w-full h-full object-cover opacity-35 select-none pointer-events-none"
                     loading="lazy"
                     decoding="async"
@@ -235,6 +237,8 @@ export default function Section06Riders() {
                       <img 
                         src={getAssetPath(rider.image)} 
                         alt={rider.name}
+                        width={400}
+                        height={250}
                         className="w-full h-full object-cover opacity-65 select-none pointer-events-none"
                         loading="lazy"
                         decoding="async"
