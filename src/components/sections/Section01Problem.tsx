@@ -89,14 +89,14 @@ export default function Section01Problem() {
   return (
     <div 
       ref={containerRef} 
-      className="relative min-h-screen lg:h-[250vh] w-full bg-black" 
+      className="relative min-h-screen lg:h-[250vh] w-full bg-black flex flex-col lg:block" 
       id="problem-wrapper"
     >
       {/* Anchor node for Navbar active tracking */}
       <div id="problem" className="absolute top-0 w-full h-[100vh] pointer-events-none" />
 
       {/* Sticky Frame Viewer - locks Section 1 static in viewport on desktop */}
-      <div className="relative lg:sticky lg:top-0 lg:h-screen w-full lg:overflow-hidden flex flex-col justify-center py-20 lg:py-0">
+      <div className="relative lg:sticky lg:top-0 lg:h-screen w-full lg:overflow-hidden flex flex-col justify-center py-20 lg:py-0 grow lg:grow-0">
 
         {/* Ambient deep dark background space */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-neutral-950 to-black pointer-events-none z-0" />
