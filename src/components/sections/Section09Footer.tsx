@@ -47,7 +47,7 @@ export default function Section09Footer({ onNavClick, onContactClick }: FooterPr
   };
 
   return (
-    <footer ref={footerRef} className="relative lg:sticky lg:bottom-0 z-10 lg:z-0 w-full bg-black border-t border-neutral-900/60 pt-20 pb-20 md:pb-64 px-6 md:px-16 overflow-hidden">
+    <footer ref={footerRef} className="relative lg:sticky lg:bottom-0 z-10 lg:z-0 w-full bg-black border-t border-neutral-900/60 pt-20 pb-[250px] md:pb-64 px-6 md:px-16 overflow-hidden">
       
       {/* Background soft ambiance reflection */}
       <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-[#00F5FF]/5 filter blur-[100px] rounded-full pointer-events-none" />
