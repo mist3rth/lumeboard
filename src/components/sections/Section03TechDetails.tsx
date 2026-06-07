@@ -143,10 +143,10 @@ export default function Section03TechDetails() {
             </div>
 
             {/* Coin badge HUD */}
-            <span className="absolute top-5 left-5 text-[9px] font-mono text-cyan-500/50 uppercase tracking-widest z-20 select-none">
+            <span className="absolute top-5 left-5 text-[9px] font-mono text-cyan-500/50 uppercase tracking-widest z-20 select-none pb-[10px] lg:pb-0">
               sys.scan_v1.07 // active
             </span>
-            <div className="absolute top-5 right-5 flex items-center gap-1.5 z-20">
+            <div className="absolute top-5 right-5 flex items-center gap-1.5 z-20 pb-[10px] lg:pb-0">
               <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
               <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-widest">telemetry_linked</span>
             </div>
@@ -370,7 +370,7 @@ export default function Section03TechDetails() {
             </div>
 
             {/* Instruction hint */}
-            <div className="absolute bottom-5 left-0 right-0 flex justify-center z-20">
+            <div className="absolute bottom-5 left-0 right-0 flex justify-center z-20 pt-[10px] lg:pt-0">
               <span className="text-[9px] font-mono text-neutral-600 uppercase tracking-widest flex items-center gap-2">
                 <span className="w-1 h-1 rounded-full bg-neutral-600 animate-pulse inline-block" />
                 sélectionne un composant pour le scanner
