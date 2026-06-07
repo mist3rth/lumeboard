@@ -30,7 +30,12 @@ export default function Section01Problem() {
 
   // GSAP SCROLL ANIMATION (Super smooth with scrub - Desktop only)
   useGSAP(() => {
-    if (isMobile) return;
+    if (isMobile) {
+      // Nettoyer les styles appliqués par GSAP sur mobile pour éviter que le contenu ne soit masqué
+      if (contentLayerRef.current) gsap.set(contentLayerRef.current, { clearProps: "all" });
+      if (textLayerRef.current) gsap.set(textLayerRef.current, { clearProps: "all" });
+      return;
+    }
     if (!containerRef.current || !contentLayerRef.current || !textLayerRef.current) return;
 
     // Set initial state for the text layer so it's ready before scroll
@@ -68,7 +73,7 @@ export default function Section01Problem() {
       duration: 0.25 
     }, 0.30);
 
-  }, { scope: containerRef });
+  }, { dependencies: [isMobile], scope: containerRef });
 
   const paragraphs = [
     "La montagne est magnifique de nuit.",
