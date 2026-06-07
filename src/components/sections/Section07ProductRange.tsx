@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ArrowUpRight, Cpu, Sparkles } from "lucide-react";
 import { getAssetPath } from "../../utils/assets";
+import { BlossomCarousel } from "@blossom-carousel/react";
 
 interface RangeProps {
   onPreOrderClick: (modelName: string, price: number) => void;
@@ -9,7 +10,30 @@ interface RangeProps {
 
 export default function Section07ProductRange({ onPreOrderClick }: RangeProps) {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
-  const [activeModel, setActiveModel] = useState<number | null>(null);
+  const [activeModel, setActiveModel] = useState<number>(0);
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
+    if (window.innerWidth >= 1024) return;
+    const container = e.currentTarget;
+    const scrollLeft = container.scrollLeft;
+    const card = container.querySelector("li");
+    const cardWidth = card ? card.clientWidth : 320;
+    const gap = 24; // gap-6
+    const index = Math.round(scrollLeft / (cardWidth + gap));
+    if (index >= 0 && index < boards.length && index !== activeModel) {
+      setActiveModel(index);
+    }
+  };
 
   const boards = [
     {
@@ -92,145 +116,302 @@ export default function Section07ProductRange({ onPreOrderClick }: RangeProps) {
         </div>
 
         {/* 3 model cards lineup */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch" id="boards-grid-layout">
-          {boards.map((board) => {
-            const isHovered = hoveredCard === board.id;
-            const isSelected = activeModel === board.id;
-            
-            return (
-              <div
-                key={board.id}
-                onMouseEnter={() => setHoveredCard(board.id)}
-                onMouseLeave={() => setHoveredCard(null)}
-                onClick={() => setActiveModel(board.id)}
-                className={`relative bg-neutral-950/80 border rounded-[32px] p-8 flex flex-col justify-between overflow-hidden transition-all duration-500 cursor-pointer ${
-                  isSelected 
-                    ? "border-neutral-500 shadow-2xl scale-[1.01]" 
-                    : isHovered 
-                      ? "border-neutral-700 shadow-xl" 
-                      : "border-neutral-900/60"
-                }`}
-                style={{
-                  boxShadow: isSelected 
-                    ? `0 25px 60px -20px ${board.accentGlow}` 
-                    : isHovered 
-                      ? `0 20px 40px -25px ${board.accentGlow}` 
-                      : "none"
-                }}
-                id={`board-card-${board.id}`}
-              >
-                {/* Visual Snowboard design preview within card */}
-                <div className="relative h-[280px] bg-neutral-900/20 rounded-2xl mb-8 flex justify-center items-center overflow-hidden border border-neutral-900/50">
-                  
-                  {/* Dynamic LED stripes on card edge */}
-                  <div 
-                    style={{ 
-                      backgroundColor: board.colors[0], 
-                      boxShadow: isSelected || isHovered ? `0 0 15px 3px ${board.colors[0]}` : "none",
-                      opacity: isSelected || isHovered ? 1 : 0.2
-                    }}
-                    className="absolute left-6 top-[15%] bottom-[15%] w-1 rounded-full transition-all duration-500" 
-                  />
-                  <div 
-                    style={{ 
-                      backgroundColor: board.colors[1], 
-                      boxShadow: isSelected || isHovered ? `0 0 15px 3px ${board.colors[1]}` : "none",
-                      opacity: isSelected || isHovered ? 1 : 0.2
-                    }}
-                    className="absolute right-6 top-[15%] bottom-[15%] w-1 rounded-full transition-all duration-500" 
-                  />
+        {isMobile ? (
+          <>
+            <div className="flex justify-between items-center mb-4 px-2" id="mobile-carousel-indicator-sec07">
+              <span className="text-xs font-mono text-neutral-500 uppercase tracking-wider">// La gamme</span>
+              <span className="text-sm font-technical font-medium text-emerald-400 bg-neutral-900/40 border border-neutral-800/60 px-3 py-1 rounded-full">
+                {activeModel + 1} / {boards.length}
+              </span>
+            </div>
+            <BlossomCarousel 
+              as="ul"
+              onScroll={handleScroll}
+              className="carousel-cover-flow carousel-cover-flow-sec07 overflow-x-auto no-scrollbar scroll-smooth pb-6"
+            >
+            {boards.map((board) => {
+              const isHovered = hoveredCard === board.id;
+              const isSelected = activeModel === board.id;
+              
+              return (
+                <li key={board.id} className="relative flex-shrink-0 snap-center w-[80vw] sm:w-[320px]">
+                  <div className="slide">
+                    <div
+                      onMouseEnter={() => setHoveredCard(board.id)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                      onClick={() => setActiveModel(board.id)}
+                      className={`card relative bg-neutral-950/80 border rounded-[32px] p-8 flex flex-col justify-between overflow-hidden transition-all duration-500 cursor-pointer ${
+                        isSelected 
+                          ? "border-neutral-500 shadow-2xl scale-[1.01]" 
+                          : isHovered 
+                            ? "border-neutral-700 shadow-xl" 
+                            : "border-neutral-900/60"
+                      }`}
+                      style={{
+                        boxShadow: isSelected 
+                          ? `0 25px 60px -20px ${board.accentGlow}` 
+                          : isHovered 
+                            ? `0 20px 40px -25px ${board.accentGlow}` 
+                            : "none"
+                      }}
+                      id={`board-card-${board.id}`}
+                    >
+                      {/* Visual Snowboard design preview within card */}
+                      <div className="relative h-[280px] bg-neutral-900/20 rounded-2xl mb-8 flex justify-center items-center overflow-hidden border border-neutral-900/50">
+                        
+                        {/* Dynamic LED stripes on card edge */}
+                        <div 
+                          style={{ 
+                            backgroundColor: board.colors[0], 
+                            boxShadow: isSelected || isHovered ? `0 0 15px 3px ${board.colors[0]}` : "none",
+                            opacity: isSelected || isHovered ? 1 : 0.2
+                          }}
+                          className="absolute left-6 top-[15%] bottom-[15%] w-1 rounded-full transition-all duration-500" 
+                        />
+                        <div 
+                          style={{ 
+                            backgroundColor: board.colors[1], 
+                            boxShadow: isSelected || isHovered ? `0 0 15px 3px ${board.colors[1]}` : "none",
+                            opacity: isSelected || isHovered ? 1 : 0.2
+                          }}
+                          className="absolute right-6 top-[15%] bottom-[15%] w-1 rounded-full transition-all duration-500" 
+                        />
 
-                  {/* Real Snowboard Detouré Image with elegant lévitation and tilt */}
-                  <motion.div
-                    animate={{ 
-                      y: isSelected || isHovered ? [0, -8, 0] : 0, 
-                      rotate: isSelected || isHovered ? 5 : 0 
-                    }}
-                    transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative z-10 w-24 h-56 flex items-center justify-center pointer-events-none select-none filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.7)]"
-                  >
-                    <img 
-                      src={getAssetPath(board.image)} 
-                      alt={board.name} 
-                      className="w-full h-full object-contain"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </motion.div>
+                        {/* Real Snowboard Detouré Image with elegant lévitation and tilt */}
+                        <motion.div
+                          animate={{ 
+                            y: isSelected || isHovered ? [0, -8, 0] : 0, 
+                            rotate: isSelected || isHovered ? 5 : 0 
+                          }}
+                          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                          className="relative z-10 w-24 h-56 flex items-center justify-center pointer-events-none select-none filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.7)]"
+                        >
+                          <img 
+                            src={getAssetPath(board.image)} 
+                            alt={board.name} 
+                            className="w-full h-full object-contain"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </motion.div>
 
-                  {/* Tech overlay specifications badge */}
-                  <div className="absolute top-4 right-4 bg-neutral-900/90 border border-neutral-800 px-2.5 py-1 rounded-full text-[9px] font-mono text-neutral-400 capitalize flex items-center gap-1">
-                    <Cpu className="w-3 h-3 text-[#00FF88]" />
-                    <span>{board.spec}</span>
-                  </div>
+                        {/* Tech overlay specifications badge */}
+                        <div className="absolute top-4 right-4 bg-neutral-900/90 border border-neutral-800 px-2.5 py-1 rounded-full text-[9px] font-mono text-neutral-400 capitalize flex items-center gap-1">
+                          <Cpu className="w-3 h-3 text-[#00FF88]" />
+                          <span>{board.spec}</span>
+                        </div>
 
-                  <div className="absolute bottom-4 left-4 flex gap-1.5 items-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
-                    <span className="text-[9px] font-mono text-neutral-400">{board.ledLabel}</span>
-                  </div>
-                </div>
-
-                {/* Model Info block */}
-                <div className="space-y-4">
-                  <span className="text-xs font-mono uppercase tracking-widest text-[#00FF88] flex items-center gap-1.5">
-                    <span>0{board.id + 1} // MODEL_SERIES</span>
-                    {isSelected && <Sparkles className="w-3.5 h-3.5 text-[#00FF88]" />}
-                  </span>
-
-                  <h3 className="text-2xl font-technical text-white uppercase tracking-wide">
-                    {board.name}
-                  </h3>
-
-                  <p className="text-xs text-[#00FF88] font-technical italic font-light">
-                    {board.tag}
-                  </p>
-
-                  <p className="text-xs font-light text-neutral-400 leading-relaxed min-h-[50px]">
-                    {board.desc}
-                  </p>
-
-                  {/* Bullet Tech details metrics */}
-                  <div className="bg-neutral-900/20 p-4 rounded-2xl border border-neutral-900/50 space-y-2">
-                    {board.specs.map((sp, idx) => (
-                      <div key={idx} className="flex justify-between items-center text-xs font-mono text-neutral-400">
-                        <span>{sp.split(" : ")[0]}</span>
-                        <span className="text-neutral-200 font-sans">{sp.split(" : ")[1] || sp}</span>
+                        <div className="absolute bottom-4 left-4 flex gap-1.5 items-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+                          <span className="text-[9px] font-mono text-neutral-400">{board.ledLabel}</span>
+                        </div>
                       </div>
-                    ))}
-                  </div>
 
-                  {/* Price & Hoverable pre-order CTA */}
-                  <div className="pt-6 border-t border-neutral-900/60 flex items-center justify-between mt-auto">
-                    <div>
-                      <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">
-                        tarif ttc
-                      </span>
-                      <span className="text-2xl font-light text-white font-technical">
-                        {board.price}€
-                      </span>
+                      {/* Model Info block */}
+                      <div className="space-y-4">
+                        <span className="text-xs font-mono uppercase tracking-widest text-[#00FF88] flex items-center gap-1.5">
+                          <span>0{board.id + 1} // MODEL_SERIES</span>
+                          {isSelected && <Sparkles className="w-3.5 h-3.5 text-[#00FF88]" />}
+                        </span>
+
+                        <h3 className="text-2xl font-technical text-white uppercase tracking-wide">
+                          {board.name}
+                        </h3>
+
+                        <p className="text-xs text-[#00FF88] font-technical italic font-light">
+                          {board.tag}
+                        </p>
+
+                        <p className="text-xs font-light text-neutral-400 leading-relaxed min-h-[50px]">
+                          {board.desc}
+                        </p>
+
+                        {/* Bullet Tech details metrics */}
+                        <div className="bg-neutral-900/20 p-4 rounded-2xl border border-neutral-900/50 space-y-2">
+                          {board.specs.map((sp, idx) => (
+                            <div key={idx} className="flex justify-between items-center text-xs font-mono text-neutral-400">
+                              <span>{sp.split(" : ")[0]}</span>
+                              <span className="text-neutral-200 font-sans">{sp.split(" : ")[1] || sp}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Price & Hoverable pre-order CTA */}
+                        <div className="pt-6 border-t border-neutral-900/60 flex items-center justify-between mt-auto">
+                          <div>
+                            <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">
+                              tarif ttc
+                            </span>
+                            <span className="text-2xl font-light text-white font-technical">
+                              {board.price}€
+                            </span>
+                          </div>
+
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onPreOrderClick(board.name, board.price);
+                            }}
+                            className={`p-3.5 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                              isSelected 
+                                ? "bg-[#00FF88] text-black scale-110 shadow-lg shadow-[#00FF88]/20" 
+                                : "bg-white text-black hover:bg-[#00FF88] hover:scale-105"
+                            }`}
+                            title="Précommander"
+                            id={`preorderboard-btn-${board.id}`}
+                          >
+                            <ArrowUpRight className="w-4 h-4 stroke-[2]" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </BlossomCarousel>
+          </>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch" id="boards-grid-layout">
+            {boards.map((board) => {
+              const isHovered = hoveredCard === board.id;
+              const isSelected = activeModel === board.id;
+              
+              return (
+                <div
+                  key={board.id}
+                  onMouseEnter={() => setHoveredCard(board.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  onClick={() => setActiveModel(board.id)}
+                  className={`relative bg-neutral-950/80 border rounded-[32px] p-8 flex flex-col justify-between overflow-hidden transition-all duration-500 cursor-pointer ${
+                    isSelected 
+                      ? "border-neutral-500 shadow-2xl scale-[1.01]" 
+                      : isHovered 
+                        ? "border-neutral-700 shadow-xl" 
+                        : "border-neutral-900/60"
+                  }`}
+                  style={{
+                    boxShadow: isSelected 
+                      ? `0 25px 60px -20px ${board.accentGlow}` 
+                      : isHovered 
+                        ? `0 20px 40px -25px ${board.accentGlow}` 
+                        : "none"
+                  }}
+                  id={`board-card-${board.id}`}
+                >
+                  {/* Visual Snowboard design preview within card */}
+                  <div className="relative h-[280px] bg-neutral-900/20 rounded-2xl mb-8 flex justify-center items-center overflow-hidden border border-neutral-900/50">
+                    
+                    {/* Dynamic LED stripes on card edge */}
+                    <div 
+                      style={{ 
+                        backgroundColor: board.colors[0], 
+                        boxShadow: isSelected || isHovered ? `0 0 15px 3px ${board.colors[0]}` : "none",
+                        opacity: isSelected || isHovered ? 1 : 0.2
+                      }}
+                      className="absolute left-6 top-[15%] bottom-[15%] w-1 rounded-full transition-all duration-500" 
+                    />
+                    <div 
+                      style={{ 
+                        backgroundColor: board.colors[1], 
+                        boxShadow: isSelected || isHovered ? `0 0 15px 3px ${board.colors[1]}` : "none",
+                        opacity: isSelected || isHovered ? 1 : 0.2
+                      }}
+                      className="absolute right-6 top-[15%] bottom-[15%] w-1 rounded-full transition-all duration-500" 
+                    />
+
+                    {/* Real Snowboard Detouré Image with elegant lévitation and tilt */}
+                    <motion.div
+                      animate={{ 
+                        y: isSelected || isHovered ? [0, -8, 0] : 0, 
+                        rotate: isSelected || isHovered ? 5 : 0 
+                      }}
+                      transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                      className="relative z-10 w-24 h-56 flex items-center justify-center pointer-events-none select-none filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.7)]"
+                    >
+                      <img 
+                        src={getAssetPath(board.image)} 
+                        alt={board.name} 
+                        className="w-full h-full object-contain"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </motion.div>
+
+                    {/* Tech overlay specifications badge */}
+                    <div className="absolute top-4 right-4 bg-neutral-900/90 border border-neutral-800 px-2.5 py-1 rounded-full text-[9px] font-mono text-neutral-400 capitalize flex items-center gap-1">
+                      <Cpu className="w-3 h-3 text-[#00FF88]" />
+                      <span>{board.spec}</span>
                     </div>
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onPreOrderClick(board.name, board.price);
-                      }}
-                      className={`p-3.5 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 ${
-                        isSelected 
-                          ? "bg-[#00FF88] text-black scale-110 shadow-lg shadow-[#00FF88]/20" 
-                          : "bg-white text-black hover:bg-[#00FF88] hover:scale-105"
-                      }`}
-                      title="Précommander"
-                      id={`preorderboard-btn-${board.id}`}
-                    >
-                      <ArrowUpRight className="w-4 h-4 stroke-[2]" />
-                    </button>
+                    <div className="absolute bottom-4 left-4 flex gap-1.5 items-center">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88]" />
+                      <span className="text-[9px] font-mono text-neutral-400">{board.ledLabel}</span>
+                    </div>
+                  </div>
+
+                  {/* Model Info block */}
+                  <div className="space-y-4">
+                    <span className="text-xs font-mono uppercase tracking-widest text-[#00FF88] flex items-center gap-1.5">
+                      <span>0{board.id + 1} // MODEL_SERIES</span>
+                      {isSelected && <Sparkles className="w-3.5 h-3.5 text-[#00FF88]" />}
+                    </span>
+
+                    <h3 className="text-2xl font-technical text-white uppercase tracking-wide">
+                      {board.name}
+                    </h3>
+
+                    <p className="text-xs text-[#00FF88] font-technical italic font-light">
+                      {board.tag}
+                    </p>
+
+                    <p className="text-xs font-light text-neutral-400 leading-relaxed min-h-[50px]">
+                      {board.desc}
+                    </p>
+
+                    {/* Bullet Tech details metrics */}
+                    <div className="bg-neutral-900/20 p-4 rounded-2xl border border-neutral-900/50 space-y-2">
+                      {board.specs.map((sp, idx) => (
+                        <div key={idx} className="flex justify-between items-center text-xs font-mono text-neutral-400">
+                          <span>{sp.split(" : ")[0]}</span>
+                          <span className="text-neutral-200 font-sans">{sp.split(" : ")[1] || sp}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Price & Hoverable pre-order CTA */}
+                    <div className="pt-6 border-t border-neutral-900/60 flex items-center justify-between mt-auto">
+                      <div>
+                        <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest block">
+                          tarif ttc
+                        </span>
+                        <span className="text-2xl font-light text-white font-technical">
+                          {board.price}€
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onPreOrderClick(board.name, board.price);
+                        }}
+                        className={`p-3.5 rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                          isSelected 
+                            ? "bg-[#00FF88] text-black scale-110 shadow-lg shadow-[#00FF88]/20" 
+                            : "bg-white text-black hover:bg-[#00FF88] hover:scale-105"
+                        }`}
+                        title="Précommander"
+                        id={`preorderboard-btn-${board.id}`}
+                      >
+                        <ArrowUpRight className="w-4 h-4 stroke-[2]" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
       </div>
     </section>

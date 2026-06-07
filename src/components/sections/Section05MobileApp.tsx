@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Sliders, RefreshCw, Activity, Music, Battery, Share2, Smartphone } from "lucide-react";
+import { BlossomCarousel } from "@blossom-carousel/react";
 
 export default function Section05MobileApp() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -8,6 +9,16 @@ export default function Section05MobileApp() {
   const [activeFunc, setActiveFunc] = useState<number>(0);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!containerRef.current) return;
@@ -108,32 +119,12 @@ export default function Section05MobileApp() {
     }
   ];
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const cardWidthRef = useRef<number>(280);
-
-  // Mettre en cache la largeur du bouton de la liste pour éviter Forced Reflow au scroll
-  useEffect(() => {
-    const measureCard = () => {
-      if (scrollContainerRef.current) {
-        const card = scrollContainerRef.current.querySelector("button");
-        if (card) {
-          cardWidthRef.current = card.clientWidth;
-        }
-      }
-    };
-    const timer = setTimeout(measureCard, 100);
-    window.addEventListener("resize", measureCard);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", measureCard);
-    };
-  }, []);
-
-  const handleScroll = () => {
-    if (!scrollContainerRef.current || window.innerWidth >= 1024) return;
-    const container = scrollContainerRef.current;
+  const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
+    if (window.innerWidth >= 1024) return;
+    const container = e.currentTarget;
     const scrollLeft = container.scrollLeft;
-    const cardWidth = cardWidthRef.current;
+    const card = container.querySelector("li");
+    const cardWidth = card ? card.clientWidth : 280;
     const gap = 16; // gap-4 est de 16px
     const index = Math.round(scrollLeft / (cardWidth + gap));
     if (index >= 0 && index < functionalities.length && index !== activeFunc) {
@@ -143,14 +134,17 @@ export default function Section05MobileApp() {
 
   const handleCardClick = (id: number) => {
     setActiveFunc(id);
-    if (scrollContainerRef.current && window.innerWidth < 1024) {
-      const container = scrollContainerRef.current;
-      const cardWidth = cardWidthRef.current;
-      const gap = 16;
-      container.scrollTo({
-        left: id * (cardWidth + gap),
-        behavior: "smooth"
-      });
+    if (window.innerWidth < 1024) {
+      const container = document.querySelector(".carousel-cover-flow-sec05");
+      if (container) {
+        const card = container.querySelector("li");
+        const cardWidth = card ? card.clientWidth : 280;
+        const gap = 16;
+        container.scrollTo({
+          left: id * (cardWidth + gap),
+          behavior: "smooth"
+        });
+      }
     }
   };
 
@@ -198,50 +192,102 @@ export default function Section05MobileApp() {
               L'application LUMEBOARD transforme votre smartphone en régie lumière. Interface épurée, réponse instantanée via Bluetooth 5.0. Changez de couleur en pleine descente ou partagez à la communauté.
             </p>
             
-            <div 
-              ref={scrollContainerRef}
-              onScroll={handleScroll}
-              className="flex lg:grid overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory lg:snap-none no-scrollbar lg:grid-cols-2 gap-4 pb-6 -mx-6 px-6 lg:mx-0 lg:px-0 scroll-smooth"
-            >
-              {functionalities.map((func, index) => {
-                const Icon = func.icon;
-                const isSelected = activeFunc === func.id;
+            {isMobile ? (
+              <>
+                <div className="flex justify-between items-center mb-4 px-2" id="mobile-carousel-indicator-sec05">
+                  <span className="text-xs font-mono text-neutral-500 uppercase tracking-wider">// Fonctionnalités</span>
+                  <span className="text-sm font-technical font-medium text-emerald-400 bg-neutral-900/40 border border-neutral-800/60 px-3 py-1 rounded-full">
+                    {activeFunc + 1} / {functionalities.length}
+                  </span>
+                </div>
+                <BlossomCarousel 
+                  as="ul"
+                  onScroll={handleScroll}
+                  className="carousel-cover-flow carousel-cover-flow-sec05 overflow-x-auto no-scrollbar scroll-smooth pb-6"
+                >
+                {functionalities.map((func, index) => {
+                  const Icon = func.icon;
+                  const isSelected = activeFunc === func.id;
 
-                return (
-                  <button
-                    key={func.id}
-                    onClick={() => handleCardClick(func.id)}
-                    className={`p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between h-[150px] cursor-pointer snap-center flex-shrink-0 w-[80vw] sm:w-[280px] lg:w-auto lg:flex-shrink ${
-                      isSelected 
-                        ? "bg-neutral-900 border-neutral-700 shadow-xl" 
-                        : "bg-neutral-950/40 border-neutral-900/60 hover:bg-neutral-950 hover:border-neutral-800"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between w-full">
-                      <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300"
-                        style={{
-                          backgroundColor: isSelected ? `${func.accentColor}15` : '#171717',
-                          color: isSelected ? func.accentColor : '#888888'
-                        }}
-                      >
-                        <Icon className="w-5 h-5" />
+                  return (
+                    <li key={func.id} className="relative flex-shrink-0 snap-center w-[80vw] sm:w-[280px] lg:w-auto lg:flex-shrink">
+                      <div className="slide">
+                        <button
+                          onClick={() => handleCardClick(func.id)}
+                          className="card p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between h-[150px] cursor-pointer w-full focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black bg-neutral-900 border-neutral-700 shadow-xl"
+                        >
+                          <div className="flex items-center justify-between w-full">
+                            <div 
+                              className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300"
+                              style={{
+                                backgroundColor: `${func.accentColor}15`,
+                                color: func.accentColor
+                              }}
+                            >
+                              <Icon className="w-5 h-5" />
+                            </div>
+                            <span className="text-[10px] font-mono text-neutral-600">0{func.id + 1}</span>
+                          </div>
+
+                          <div>
+                            <h3 className="text-sm font-medium text-white tracking-wide uppercase font-technical mb-1">
+                              {func.title}
+                            </h3>
+                            <p className="text-[11px] font-light text-neutral-500 line-clamp-2">
+                              {func.desc}
+                            </p>
+                          </div>
+                        </button>
                       </div>
-                      <span className="text-[10px] font-mono text-neutral-600">0{func.id + 1}</span>
-                    </div>
+                    </li>
+                  );
+                })}
+              </BlossomCarousel>
+              </>
+            ) : (
+              <div 
+                className="grid grid-cols-2 gap-4 w-full"
+              >
+                {functionalities.map((func, index) => {
+                  const Icon = func.icon;
+                  const isSelected = activeFunc === func.id;
 
-                    <div>
-                      <h3 className="text-sm font-medium text-white tracking-wide uppercase font-technical mb-1">
-                        {func.title}
-                      </h3>
-                      <p className="text-[11px] font-light text-neutral-500 line-clamp-2">
-                        {func.desc}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                  return (
+                    <button
+                      key={func.id}
+                      onClick={() => handleCardClick(func.id)}
+                      className={`p-5 rounded-2xl border text-left transition-all duration-300 flex flex-col justify-between h-[150px] cursor-pointer w-full focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black ${
+                        isSelected 
+                          ? "bg-neutral-900 border-neutral-700 shadow-xl" 
+                          : "bg-neutral-950/40 border-neutral-900/60 hover:bg-neutral-950 hover:border-neutral-800"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <div 
+                          className="w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300"
+                          style={{
+                            backgroundColor: isSelected ? `${func.accentColor}15` : '#171717',
+                            color: isSelected ? func.accentColor : '#888888'
+                          }}
+                        >
+                          <Icon className="w-5 h-5" />
+                        </div>
+                        <span className="text-[10px] font-mono text-neutral-600">0{func.id + 1}</span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-medium text-white tracking-wide uppercase font-technical mb-1">
+                          {func.title}
+                        </h3>
+                        <p className="text-[11px] font-light text-neutral-500 line-clamp-2">
+                          {func.desc}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Right Block: Floating smartphone mockup (Perspective hover) */}

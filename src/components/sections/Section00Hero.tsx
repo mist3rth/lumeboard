@@ -67,7 +67,7 @@ export default function Section00Hero({ onDiscoverClick, onPreOrderClick }: Hero
         
         {/* LUMEBOARD letter-by-letter staggered entrance */}
         <h1 
-          className="font-display text-7xl sm:text-8xl md:text-9xl lg:text-[11rem] tracking-wider text-white m-0 p-0 leading-none select-none select-none filter drop-shadow-[0_4px_30px_rgba(255,255,255,0.1)]"
+          className="font-display text-[11.5vw] sm:text-8xl md:text-9xl lg:text-[11rem] tracking-wider text-white m-0 p-0 leading-none select-none filter drop-shadow-[0_4px_30px_rgba(255,255,255,0.1)] whitespace-nowrap"
           id="hero-main-title"
         >
           {brandName.split("").map((letter, index) => {

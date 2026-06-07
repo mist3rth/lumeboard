@@ -2,41 +2,31 @@ import { useState, useRef, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "motion/react";
 import { Sparkles, BatteryCharging, Smartphone, Eye } from "lucide-react";
 import { getAssetPath } from "../../utils/assets";
+import { BlossomCarousel } from "@blossom-carousel/react";
 
 export default function Section02Revelation() {
   const containerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(containerRef, { once: false, amount: 0.15 });
-  const [activeFeature, setActiveFeature] = useState<number | null>(null);
+  const [activeFeature, setActiveFeature] = useState<number>(1);
   const [activeColor, setActiveColor] = useState<string>("rgb(40, 210, 114)");
   const [sliderHue, setSliderHue] = useState<number>(145); // Approx hue for rgb(40, 210, 114)
 
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const cardWidthRef = useRef<number>(320);
-
-  // Mesurer la largeur de la carte une seule fois et sur resize pour éviter les recalculs forcés
+  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
-    const measureCard = () => {
-      if (scrollContainerRef.current) {
-        const card = scrollContainerRef.current.querySelector("[id^='feature-card-']");
-        if (card) {
-          cardWidthRef.current = card.clientWidth;
-        }
-      }
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
     };
-    // Délai court pour s'assurer que le rendu initial est fait
-    const timer = setTimeout(measureCard, 100);
-    window.addEventListener("resize", measureCard);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("resize", measureCard);
-    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleScroll = () => {
-    if (!scrollContainerRef.current || window.innerWidth >= 1024) return;
-    const container = scrollContainerRef.current;
+  const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
+    if (window.innerWidth >= 1024) return;
+    const container = e.currentTarget;
     const scrollLeft = container.scrollLeft;
-    const cardWidth = cardWidthRef.current;
+    const card = container.querySelector("li");
+    const cardWidth = card ? card.clientWidth : 320;
     const gap = 24; // gap-6 est de 24px (1.5rem)
     const index = Math.round(scrollLeft / (cardWidth + gap));
     if (index >= 0 && index < features.length) {
@@ -58,14 +48,17 @@ export default function Section02Revelation() {
     else if (feat.id === 2) setSliderHue(319);
     else if (feat.id === 3) setSliderHue(211);
 
-    if (scrollContainerRef.current && window.innerWidth < 1024) {
-      const container = scrollContainerRef.current;
-      const cardWidth = cardWidthRef.current;
-      const gap = 24;
-      container.scrollTo({
-        left: index * (cardWidth + gap),
-        behavior: "smooth"
-      });
+    if (window.innerWidth < 1024) {
+      const container = document.querySelector(".carousel-cover-flow-sec02");
+      if (container) {
+        const card = container.querySelector("li");
+        const cardWidth = card ? card.clientWidth : 320;
+        const gap = 24;
+        container.scrollTo({
+          left: index * (cardWidth + gap),
+          behavior: "smooth"
+        });
+      }
     }
   };
 
@@ -159,171 +152,337 @@ export default function Section02Revelation() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-16 items-start">
           
           {/* Left Block: Features List / Carousel on Mobile */}
-          <div 
-            ref={scrollContainerRef}
-            onScroll={handleScroll}
-            className="order-2 lg:order-1 lg:col-span-5 flex lg:flex-col overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory lg:snap-none no-scrollbar gap-6 pb-6 -mx-6 px-6 lg:mx-0 lg:px-0 scroll-smooth"
-          >
-            {features.map((feat, index) => {
-              const IconComponent = feat.icon;
-              const isSelected = activeFeature === feat.id;
+          {isMobile ? (
+            <>
+              <div className="flex justify-between items-center mb-4 px-2" id="mobile-carousel-indicator-sec02">
+                <span className="text-xs font-mono text-neutral-500 uppercase tracking-wider">// Innovations</span>
+                <span className="text-sm font-technical font-medium text-emerald-400 bg-neutral-900/40 border border-neutral-800/60 px-3 py-1 rounded-full">
+                  {features.findIndex(f => f.id === activeFeature) !== -1 ? features.findIndex(f => f.id === activeFeature) + 1 : 1} / {features.length}
+                </span>
+              </div>
+              <BlossomCarousel 
+                as="ul"
+                onScroll={handleScroll}
+                className="carousel-cover-flow carousel-cover-flow-sec02 overflow-x-auto no-scrollbar scroll-smooth pb-6"
+              >
+              {features.map((feat, index) => {
+                const IconComponent = feat.icon;
+                const isSelected = activeFeature === feat.id;
 
-              return (
-                <div key={feat.id} className="relative flex-shrink-0 snap-center w-[80vw] sm:w-[320px] lg:w-auto lg:flex-shrink">
+                return (
+                  <li key={feat.id} className="relative flex-shrink-0 snap-center w-[80vw] sm:w-[320px] lg:w-auto lg:flex-shrink">
+                    <div className="slide">
+                      {/* CARTE PRINCIPALE — Box-shadow underglow néon directement sur la carte */}
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0, x: -30 }}
+                        animate={{ 
+                          opacity: isInView ? 1 : 0, 
+                          x: isInView ? 0 : -30,
+                          borderColor: isSelected ? feat.color : `${feat.color}44`
+                        }}
+                        transition={{ 
+                          type: "spring",
+                          stiffness: 380,
+                          damping: 28,
+                          borderColor: { duration: 0.15, ease: "easeOut" }
+                        }}
+                        whileHover={{ 
+                          x: 6,
+                          borderColor: feat.color,
+                          backgroundColor: isSelected ? "rgba(23, 23, 23, 0.7)" : "rgba(14, 14, 14, 0.5)"
+                        }}
+                        onClick={() => handleCardClick(feat, index)}
+                        tabIndex={0}
+                        role="button"
+                        aria-pressed={isSelected}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleCardClick(feat, index);
+                          }
+                        }}
+                        style={isSelected ? {
+                          boxShadow: [
+                            `0 20px 60px -10px ${feat.color}55`,
+                            `0 35px 80px -15px ${feat.color}30`,
+                            `0 50px 100px -20px ${feat.color}15`,
+                            `0 15px 40px rgba(0,0,0,0.8)`
+                          ].join(", ")
+                        } : {}}
+                        className={`card p-6 rounded-2xl border cursor-pointer flex gap-4 relative transition-shadow duration-500 w-full focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black ${
+                          isSelected 
+                            ? "bg-neutral-900/60 z-10" 
+                            : "bg-[#090909]/40 hover:bg-[#0e0e0e]/50 z-10"
+                        }`}
+                        id={`feature-card-${feat.id}`}
+                      >
+                        {/* EFFET BORDURE ÉLECTRIQUE ACTIF (z-0 - Placé en arrière-plan) */}
+                        <AnimatePresence>
+                          {isSelected && (
+                            <motion.div 
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.15, ease: "easeOut" }} // Disparition et apparition ultra-rapides
+                              className="absolute inset-0 pointer-events-none rounded-2xl z-0"
+                            >
+                              {/* Calque principal de turbulence électrique (Desktop uniquement) */}
+                              <div 
+                                className="hidden lg:block absolute inset-0 rounded-2xl pointer-events-none"
+                                style={{
+                                  border: `2.5px solid ${feat.color}`,
+                                  filter: "url(#electric-turbulence)",
+                                  margin: "-1px"
+                                }}
+                              />
+                              {/* Bordure simple et fluide (Mobile/Tablette) */}
+                              <div 
+                                className="block lg:hidden absolute inset-0 rounded-2xl pointer-events-none"
+                                style={{
+                                  border: `2px solid ${feat.color}`,
+                                  margin: "-1px"
+                                }}
+                              />
+                              {/* Glow Layer 1 (blur fin) */}
+                              <div 
+                                className="absolute inset-0 rounded-2xl pointer-events-none"
+                                style={{
+                                  border: `2px solid ${feat.color}`,
+                                  filter: "blur(2.5px)",
+                                  opacity: 0.85
+                                }}
+                              />
+                              {/* Glow Layer 2 (halo de rayonnement) */}
+                              <div 
+                                className="absolute inset-0 rounded-2xl pointer-events-none"
+                                style={{
+                                  border: `2px solid ${feat.color}`,
+                                  filter: "blur(7px)",
+                                  opacity: 0.45
+                                }}
+                              />
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
 
-                  {/* CARTE PRINCIPALE — Box-shadow underglow néon directement sur la carte */}
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, x: -30 }}
-                    animate={{ 
-                      opacity: isInView ? 1 : 0, 
-                      x: isInView ? 0 : -30,
-                      borderColor: isSelected ? feat.color : `${feat.color}44`
-                    }}
-                    transition={{ 
-                      type: "spring",
-                      stiffness: 380,
-                      damping: 28,
-                      borderColor: { duration: 0.15, ease: "easeOut" }
-                    }}
-                    whileHover={{ 
-                      x: 6,
-                      borderColor: feat.color,
-                      backgroundColor: isSelected ? "rgba(23, 23, 23, 0.7)" : "rgba(14, 14, 14, 0.5)"
-                    }}
-                    onClick={() => handleCardClick(feat, index)}
-                    tabIndex={0}
-                    role="button"
-                    aria-pressed={isSelected}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleCardClick(feat, index);
-                      }
-                    }}
-                    style={isSelected ? {
-                      boxShadow: [
-                        `0 20px 60px -10px ${feat.color}55`,
-                        `0 35px 80px -15px ${feat.color}30`,
-                        `0 50px 100px -20px ${feat.color}15`,
-                        `0 15px 40px rgba(0,0,0,0.8)`
-                      ].join(", ")
-                    } : {}}
-                    className={`p-6 rounded-2xl border cursor-pointer flex gap-4 relative transition-shadow duration-500 w-full focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black ${
-                      isSelected 
-                        ? "bg-neutral-900/60 z-10" 
-                        : "bg-[#090909]/40 hover:bg-[#0e0e0e]/50 z-10"
-                    }`}
-                    id={`feature-card-${feat.id}`}
-                  >
-                    {/* EFFET BORDURE ÉLECTRIQUE ACTIF (z-0 - Placé en arrière-plan) */}
-                    <AnimatePresence>
-                      {isSelected && (
-                        <motion.div 
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.15, ease: "easeOut" }} // Disparition et apparition ultra-rapides
-                          className="absolute inset-0 pointer-events-none rounded-2xl z-0"
-                        >
-                          {/* Calque principal de turbulence électrique (Desktop uniquement) */}
-                          <div 
-                            className="hidden lg:block absolute inset-0 rounded-2xl pointer-events-none"
-                            style={{
-                              border: `2.5px solid ${feat.color}`,
-                              filter: "url(#electric-turbulence)",
-                              margin: "-1px"
-                            }}
-                          />
-                          {/* Bordure simple et fluide (Mobile/Tablette) */}
-                          <div 
-                            className="block lg:hidden absolute inset-0 rounded-2xl pointer-events-none"
-                            style={{
-                              border: `2px solid ${feat.color}`,
-                              margin: "-1px"
-                            }}
-                          />
-                          {/* Glow Layer 1 (blur fin) */}
-                          <div 
-                            className="absolute inset-0 rounded-2xl pointer-events-none"
-                            style={{
-                              border: `2px solid ${feat.color}`,
-                              filter: "blur(2.5px)",
-                              opacity: 0.85
-                            }}
-                          />
-                          {/* Glow Layer 2 (halo de rayonnement) */}
-                          <div 
-                            className="absolute inset-0 rounded-2xl pointer-events-none"
-                            style={{
-                              border: `2px solid ${feat.color}`,
-                              filter: "blur(7px)",
-                              opacity: 0.45
-                            }}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* CONTENU DE LA CARTE (relative z-10 - Lisibilité totale garantie) */}
-                    <div 
-                      className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative z-10"
-                      style={{ 
-                        backgroundColor: isSelected ? `${feat.color}20` : '#171717',
-                        color: isSelected ? feat.color : '#a3a3a3',
-                        boxShadow: isSelected ? `0 0 15px ${feat.color}40` : 'none'
-                      }}
-                    >
-                      <IconComponent className="w-5 h-5 animate-pulse" />
-                    </div>
-                    <div className="flex-1 min-w-0 relative z-10">
-                      <h3 className="text-lg font-normal text-white uppercase tracking-wider mb-2 font-technical">
-                        {feat.title}
-                      </h3>
-                      <p className="text-sm font-light text-neutral-400 leading-relaxed">
-                        {feat.sub}
-                      </p>
-                      
-                      {/* Détails toujours visibles et colorés */}
-                      <div className="mt-3 overflow-hidden">
+                        {/* CONTENU DE LA CARTE (relative z-10 - Lisibilité totale garantie) */}
                         <div 
-                          className="text-xs font-mono tracking-wider flex items-center gap-2.5 bg-black/55 px-3 py-1.5 rounded-lg border transition-all duration-300 w-fit"
+                          className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative z-10"
                           style={{ 
-                            color: feat.color,
-                            textShadow: `0 0 8px ${feat.color}40`,
-                            boxShadow: `inset 0 0 10px ${feat.color}05`,
-                            borderColor: isSelected ? feat.color : `${feat.color}33`,
-                            opacity: isSelected ? 1 : 0.7
+                            backgroundColor: isSelected ? `${feat.color}20` : '#171717',
+                            color: isSelected ? feat.color : '#a3a3a3',
+                            boxShadow: isSelected ? `0 0 15px ${feat.color}40` : 'none'
                           }}
                         >
-                          {/* Voyant LED néon pulsant */}
-                          <div className="relative flex h-2 w-2">
-                            {isSelected && (
-                              <span 
-                                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-                                style={{ backgroundColor: feat.color }}
-                              />
-                            )}
-                            <span 
-                              className="relative inline-flex rounded-full h-2 w-2"
+                          <IconComponent className="w-5 h-5 animate-pulse" />
+                        </div>
+                        <div className="flex-1 min-w-0 relative z-10">
+                          <h3 className="text-lg font-normal text-white uppercase tracking-wider mb-2 font-technical">
+                            {feat.title}
+                          </h3>
+                          <p className="text-sm font-light text-neutral-400 leading-relaxed">
+                            {feat.sub}
+                          </p>
+                          
+                          {/* Détails toujours visibles et colorés */}
+                          <div className="mt-3 overflow-hidden">
+                            <div 
+                              className="text-xs font-mono tracking-wider flex items-center gap-2.5 bg-black/55 px-3 py-1.5 rounded-lg border transition-all duration-300 w-fit"
                               style={{ 
-                                backgroundColor: feat.color,
-                                boxShadow: isSelected ? `0 0 10px ${feat.color}, 0 0 20px ${feat.color}` : `0 0 5px ${feat.color}`
+                                color: feat.color,
+                                textShadow: `0 0 8px ${feat.color}40`,
+                                boxShadow: `inset 0 0 10px ${feat.color}05`,
+                                borderColor: isSelected ? feat.color : `${feat.color}33`,
+                                opacity: isSelected ? 1 : 0.7
+                              }}
+                            >
+                              {/* Voyant LED néon pulsant */}
+                              <div className="relative flex h-2 w-2">
+                                {isSelected && (
+                                  <span 
+                                    className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                                    style={{ backgroundColor: feat.color }}
+                                  />
+                                )}
+                                <span 
+                                  className="relative inline-flex rounded-full h-2 w-2"
+                                  style={{ 
+                                    backgroundColor: feat.color,
+                                    boxShadow: isSelected ? `0 0 10px ${feat.color}, 0 0 20px ${feat.color}` : `0 0 5px ${feat.color}`
+                                  }}
+                                />
+                              </div>
+                              
+                              <span className="font-semibold uppercase text-[10px] tracking-widest opacity-90 flex items-center gap-1">
+                                ⚡ Active : <span className="text-white font-normal capitalize tracking-normal">{feat.positionLabel}</span>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </li>
+                );
+              })}
+             </BlossomCarousel>
+            </>
+          ) : (
+            <div 
+              className="order-2 lg:order-1 lg:col-span-5 flex lg:flex-col gap-6"
+            >
+              {features.map((feat, index) => {
+                const IconComponent = feat.icon;
+                const isSelected = activeFeature === feat.id;
+
+                return (
+                  <div key={feat.id} className="w-full">
+                    {/* CARTE PRINCIPALE — Box-shadow underglow néon directement sur la carte */}
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ 
+                        opacity: isInView ? 1 : 0, 
+                        x: isInView ? 0 : -30,
+                        borderColor: isSelected ? feat.color : `${feat.color}44`
+                      }}
+                      transition={{ 
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 28,
+                        borderColor: { duration: 0.15, ease: "easeOut" }
+                      }}
+                      whileHover={{ 
+                        x: 6,
+                        borderColor: feat.color,
+                        backgroundColor: isSelected ? "rgba(23, 23, 23, 0.7)" : "rgba(14, 14, 14, 0.5)"
+                      }}
+                      onClick={() => handleCardClick(feat, index)}
+                      tabIndex={0}
+                      role="button"
+                      aria-pressed={isSelected}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleCardClick(feat, index);
+                        }
+                      }}
+                      style={isSelected ? {
+                        boxShadow: [
+                          `0 20px 60px -10px ${feat.color}55`,
+                          `0 35px 80px -15px ${feat.color}30`,
+                          `0 50px 100px -20px ${feat.color}15`,
+                          `0 15px 40px rgba(0,0,0,0.8)`
+                        ].join(", ")
+                      } : {}}
+                      className={`p-6 rounded-2xl border cursor-pointer flex gap-4 relative transition-shadow duration-500 w-full focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black ${
+                        isSelected 
+                          ? "bg-neutral-900/60 z-10" 
+                          : "bg-[#090909]/40 hover:bg-[#0e0e0e]/50 z-10"
+                      }`}
+                      id={`feature-card-${feat.id}`}
+                    >
+                      {/* EFFET BORDURE ÉLECTRIQUE ACTIF (z-0 - Placé en arrière-plan) */}
+                      <AnimatePresence>
+                        {isSelected && (
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15, ease: "easeOut" }} // Disparition et apparition ultra-rapides
+                            className="absolute inset-0 pointer-events-none rounded-2xl z-0"
+                          >
+                            {/* Calque principal de turbulence électrique */}
+                            <div 
+                              className="absolute inset-0 rounded-2xl pointer-events-none border-[2.5px]"
+                              style={{
+                                borderColor: feat.color,
+                                filter: "url(#electric-turbulence)",
+                                margin: "-1px"
                               }}
                             />
+                            {/* Glow Layer 1 (blur fin) */}
+                            <div 
+                              className="absolute inset-0 rounded-2xl pointer-events-none border-2"
+                              style={{
+                                borderColor: feat.color,
+                                filter: "blur(2.5px)",
+                                opacity: 0.85
+                              }}
+                            />
+                            {/* Glow Layer 2 (halo de rayonnement) */}
+                            <div 
+                              className="absolute inset-0 rounded-2xl pointer-events-none border-2"
+                              style={{
+                                borderColor: feat.color,
+                                filter: "blur(7px)",
+                                opacity: 0.45
+                              }}
+                            />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+
+                      {/* CONTENU DE LA CARTE (relative z-10 - Lisibilité totale garantie) */}
+                      <div 
+                        className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 relative z-10"
+                        style={{ 
+                          backgroundColor: isSelected ? `${feat.color}20` : '#171717',
+                          color: isSelected ? feat.color : '#a3a3a3',
+                          boxShadow: isSelected ? `0 0 15px ${feat.color}40` : 'none'
+                        }}
+                      >
+                        <IconComponent className="w-5 h-5 animate-pulse" />
+                      </div>
+                      <div className="flex-1 min-w-0 relative z-10">
+                        <h3 className="text-lg font-normal text-white uppercase tracking-wider mb-2 font-technical">
+                          {feat.title}
+                        </h3>
+                        <p className="text-sm font-light text-neutral-400 leading-relaxed">
+                          {feat.sub}
+                        </p>
+                        
+                        {/* Détails toujours visibles et colorés */}
+                        <div className="mt-3 overflow-hidden">
+                          <div 
+                            className="text-xs font-mono tracking-wider flex items-center gap-2.5 bg-black/55 px-3 py-1.5 rounded-lg border transition-all duration-300 w-fit"
+                            style={{ 
+                              color: feat.color,
+                              textShadow: `0 0 8px ${feat.color}40`,
+                              boxShadow: `inset 0 0 10px ${feat.color}05`,
+                              borderColor: isSelected ? feat.color : `${feat.color}33`,
+                              opacity: isSelected ? 1 : 0.7
+                            }}
+                          >
+                            {/* Voyant LED néon pulsant */}
+                            <div className="relative flex h-2 w-2">
+                              {isSelected && (
+                                <span 
+                                  className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                                  style={{ backgroundColor: feat.color }}
+                                />
+                              )}
+                              <span 
+                                className="relative inline-flex rounded-full h-2 w-2"
+                                style={{ 
+                                  backgroundColor: feat.color,
+                                  boxShadow: isSelected ? `0 0 10px ${feat.color}, 0 0 20px ${feat.color}` : `0 0 5px ${feat.color}`
+                                }}
+                              />
+                            </div>
+                            
+                            <span className="font-semibold uppercase text-[10px] tracking-widest opacity-90 flex items-center gap-1">
+                              ⚡ Active : <span className="text-white font-normal capitalize tracking-normal">{feat.positionLabel}</span>
+                            </span>
                           </div>
-                          
-                          <span className="font-semibold uppercase text-[10px] tracking-widest opacity-90 flex items-center gap-1">
-                            ⚡ Active : <span className="text-white font-normal capitalize tracking-normal">{feat.positionLabel}</span>
-                          </span>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                </div>
-              );
-            })}
-          </div>
+                    </motion.div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* Right Block: High-Tech Interactive Snowboard Mockup */}
           <div className="order-1 lg:order-2 lg:col-span-7 flex flex-col justify-center items-center gap-4 lg:gap-8 relative min-h-[500px] lg:min-h-[600px] pb-4 lg:pb-16">

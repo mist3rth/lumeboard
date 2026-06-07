@@ -1,10 +1,36 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { Quote, Cpu } from "lucide-react";
 import { getAssetPath } from "../../utils/assets";
+import { BlossomCarousel } from "@blossom-carousel/react";
 
 export default function Section06Riders() {
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeRider, setActiveRider] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
+    if (window.innerWidth >= 768) return;
+    const container = e.currentTarget;
+    const scrollLeft = container.scrollLeft;
+    const card = container.querySelector("li");
+    const cardWidth = card ? card.clientWidth : 280;
+    const gap = 24; // gap-6
+    const index = Math.round(scrollLeft / (cardWidth + gap));
+    if (index >= 0 && index < riders.length && index !== activeRider) {
+      setActiveRider(index);
+    }
+  };
   
   // Capturer la progression du scroll vertical du parent
   const { scrollYProgress } = useScroll({
@@ -72,11 +98,11 @@ export default function Section06Riders() {
   return (
     <div 
       ref={containerRef} 
-      className="relative h-[200vh] bg-black"
+      className={isMobile ? "relative bg-black" : "relative h-[200vh] bg-black"}
       id="riders-section-wrapper"
     >
-      {/* Conteneur Sticky bloqué de manière native par le navigateur */}
-      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden bg-[#030303] z-10">
+      {/* Conteneur Sticky bloqué de manière native par le navigateur sur desktop */}
+      <div className={isMobile ? "relative w-full flex flex-col justify-center bg-[#030303] z-10 py-16" : "sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden bg-[#030303] z-10"}>
         
         {/* Lueur d'ambiance dynamique */}
         <div 
@@ -183,61 +209,76 @@ export default function Section06Riders() {
         </div>
 
         {/* --- MOBILE RESPONSIVE LAYOUT: HORIZONTAL SCROLL OR STACK (sm et inférieur) --- */}
-        <div className="block md:hidden overflow-x-auto w-full px-6 select-none scrollbar-none py-4">
-          <div className="flex gap-6 w-[270vw]">
+        {isMobile && (
+          <>
+            <div className="flex justify-between items-center mb-4 px-6" id="mobile-carousel-indicator-sec06">
+              <span className="text-xs font-mono text-neutral-500 uppercase tracking-wider">// Team Riders</span>
+              <span className="text-sm font-technical font-medium text-[#8B00FF] bg-neutral-900/40 border border-neutral-800/60 px-3 py-1 rounded-full">
+                {activeRider + 1} / {riders.length}
+              </span>
+            </div>
+            <BlossomCarousel 
+              as="ul"
+              onScroll={handleScroll}
+              className="carousel-cover-flow carousel-cover-flow-sec06 md:hidden overflow-x-auto w-full select-none no-scrollbar py-4"
+            >
             {riders.map((rider) => (
-              <div
-                key={rider.id}
-                tabIndex={0}
-                className={`relative w-[85vw] h-[50vh] min-h-[380px] bg-neutral-950/90 border ${rider.borderColor} rounded-[28px] overflow-hidden flex flex-col justify-end p-6 shadow-xl focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black`}
-                aria-label={`Témoignage de ${rider.name}, ${rider.role}`}
-              >
-                {/* Mobile image */}
-                <div className="absolute inset-0 z-0">
-                  <img 
-                    src={getAssetPath(rider.image)} 
-                    alt={rider.name}
-                    className="w-full h-full object-cover opacity-65 select-none pointer-events-none"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent z-10" />
-                </div>
-
-                {/* Mobile top HUD */}
-                <div className="absolute top-5 right-5 flex flex-col gap-1 items-end z-20">
-                  <span className={`px-2.5 py-1 rounded-full bg-black/60 border ${rider.borderColor} text-[8px] font-mono ${rider.accentText}`}>
-                    {rider.board}
-                  </span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-neutral-900/60 text-[7px] font-mono text-neutral-400">
-                    💡 {rider.lumens}
-                  </span>
-                </div>
-
-                <div className="relative z-20 space-y-3">
-                  <p className="text-sm text-neutral-200 font-light italic leading-relaxed">
-                    "{rider.quote}"
-                  </p>
-
-                  <div className="pt-4 border-t border-neutral-900/80 flex justify-between items-center">
-                    <div>
-                      <h3 className="text-base font-technical font-semibold text-white">
-                        {rider.name}, {rider.age} ans
-                      </h3>
-                      <p className="text-[10px] text-neutral-400 font-light mt-0.5">
-                        {rider.role}
-                      </p>
+              <li key={rider.id} className="relative flex-shrink-0 snap-center w-[85vw] h-[50vh] min-h-[380px]">
+                <div className="slide">
+                  <div
+                    tabIndex={0}
+                    className={`card relative size-full bg-neutral-950/90 border ${rider.borderColor} rounded-[28px] overflow-hidden flex flex-col justify-end p-6 shadow-xl focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-2 focus:ring-offset-black`}
+                    aria-label={`Témoignage de ${rider.name}, ${rider.role}`}
+                  >
+                    {/* Mobile image */}
+                    <div className="absolute inset-0 z-0">
+                      <img 
+                        src={getAssetPath(rider.image)} 
+                        alt={rider.name}
+                        className="w-full h-full object-cover opacity-65 select-none pointer-events-none"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/20 to-transparent z-10" />
                     </div>
 
-                    <span className={`text-[8px] font-mono tracking-widest ${rider.accentText} uppercase`}>
-                      {rider.location}
-                    </span>
+                    {/* Mobile top HUD */}
+                    <div className="absolute top-5 right-5 flex flex-col gap-1 items-end z-20">
+                      <span className={`px-2.5 py-1 rounded-full bg-black/60 border ${rider.borderColor} text-[8px] font-mono ${rider.accentText}`}>
+                        {rider.board}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-neutral-900/60 text-[7px] font-mono text-neutral-400">
+                        💡 {rider.lumens}
+                      </span>
+                    </div>
+
+                    <div className="relative z-20 space-y-3">
+                      <p className="text-sm text-neutral-200 font-light italic leading-relaxed">
+                        "{rider.quote}"
+                      </p>
+
+                      <div className="pt-4 border-t border-neutral-900/80 flex justify-between items-center">
+                        <div>
+                          <h3 className="text-base font-technical font-semibold text-white">
+                            {rider.name}, {rider.age} ans
+                          </h3>
+                          <p className="text-[10px] text-neutral-400 font-light mt-0.5">
+                            {rider.role}
+                          </p>
+                        </div>
+
+                        <span className={`text-[8px] font-mono tracking-widest ${rider.accentText} uppercase`}>
+                          {rider.location}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
-        </div>
+          </BlossomCarousel>
+          </>
+        )}
 
       </div>
     </div>
