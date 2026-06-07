@@ -16,12 +16,11 @@ export default function Section01Problem() {
   const contentLayerRef = useRef<HTMLDivElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => typeof window !== "undefined" ? window.innerWidth < 1024 : false);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 1024);
     };
-    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -85,13 +84,13 @@ export default function Section01Problem() {
   ];
 
   return (
-    <div ref={containerRef} className={isMobile ? "relative bg-black" : "relative h-[250vh] w-full bg-black"} id="problem-wrapper">
+    <div ref={containerRef} className="relative min-h-screen lg:h-[250vh] w-full bg-black" id="problem-wrapper">
       
       {/* Anchor node for Navbar active tracking */}
       <div id="problem" className="absolute top-0 w-full h-[100vh] pointer-events-none" />
 
       {/* Sticky Frame Viewer - locks Section 1 static in viewport on desktop */}
-      <div className={isMobile ? "relative w-full py-24 flex flex-col justify-center" : "sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center z-10"}>
+      <div className="relative lg:sticky lg:top-0 lg:h-screen w-full lg:overflow-hidden flex flex-col justify-center py-24 lg:py-0">
 
         {/* Ambient deep dark background space */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-neutral-950 to-black pointer-events-none z-0" />
@@ -117,69 +116,114 @@ export default function Section01Problem() {
 
             <div className="space-y-2">
               {paragraphs.map((line, idx) => (
-                <motion.p
-                  key={idx}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={isMobile || isHeadingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-                  transition={{
-                    duration: 0.8,
-                    delay: idx * 0.12,
-                    ease: [0.16, 1, 0.3, 1]
-                  }}
-                  className={`text-base md:text-md lg:text-lg font-light text-neutral-300 leading-snug ${
-                    line === "Jusqu'à maintenant." ? "text-[#00F5FF] font-normal tracking-wide pt-1.5" : ""
-                  }`}
-                >
-                  {line}
-                </motion.p>
+                <div key={idx}>
+                  {isMobile ? (
+                    <p
+                      className={`text-base md:text-md lg:text-lg font-light text-neutral-300 leading-snug ${
+                        line === "Jusqu'à maintenant." ? "text-[#00F5FF] font-normal tracking-wide pt-1.5" : ""
+                      }`}
+                    >
+                      {line}
+                    </p>
+                  ) : (
+                    <motion.p
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={isHeadingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                      transition={{
+                        duration: 0.8,
+                        delay: idx * 0.12,
+                        ease: [0.16, 1, 0.3, 1]
+                      }}
+                      className={`text-base md:text-md lg:text-lg font-light text-neutral-300 leading-snug ${
+                        line === "Jusqu'à maintenant." ? "text-[#00F5FF] font-normal tracking-wide pt-1.5" : ""
+                      }`}
+                    >
+                      {line}
+                    </motion.p>
+                  )}
+                </div>
               ))}
             </div>
           </div>
 
           {/* Right Block: Image with Ambient Scanning Laser */}
           <div className="lg:col-span-6 w-full flex justify-center items-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={isMobile || isHeadingInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-              transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-[500px] h-[320px] md:h-[420px] bg-neutral-950 border border-neutral-900/80 rounded-[32px] overflow-hidden group shadow-2xl transition-all duration-700 hover:border-[#00F5FF]/60 hover:shadow-[0_0_45px_rgba(0,245,255,0.3)] cursor-pointer"
-            >
-              <img 
-                src={getAssetPath("/hero_image.webp")} 
-                alt="Snowboarder climbing mountain in the dark" 
-                className="absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none opacity-80"
-                referrerPolicy="no-referrer"
-              />
-
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#00F5FF]/5 to-[#00F5FF]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none mix-blend-screen" />
-
-              <div className="absolute inset-0 blur-sm pointer-events-none mix-blend-screen opacity-50">
-                <motion.div 
-                  animate={{
-                    x: ["0%", "100%", "0%"],
-                    opacity: [0.2, 0.6, 0.2]
-                  }}
-                  transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute top-0 bottom-0 w-[4px] h-[200%] bg-gradient-to-b from-cyan-400 via-transparent to-transparent origin-top rotate-[25deg]"
+            {isMobile ? (
+              <div
+                className="relative w-full max-w-[500px] h-[320px] md:h-[420px] bg-neutral-950 border border-[#00F5FF]/40 rounded-[32px] overflow-hidden group shadow-2xl transition-all duration-700 hover:border-[#00F5FF]/60 hover:shadow-[0_0_45px_rgba(0,245,255,0.3)] cursor-pointer"
+              >
+                <img 
+                  src={getAssetPath("/hero_image.webp")} 
+                  alt="Snowboarder climbing mountain in the dark" 
+                  className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none opacity-80"
+                  referrerPolicy="no-referrer"
                 />
-              </div>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#00F5FF]/5 to-[#00F5FF]/15 opacity-100 pointer-events-none mix-blend-screen" />
 
-              <div className="absolute top-6 left-6 right-6">
-                <p className="text-xs font-mono uppercase tracking-widest text-[#00F5FF]">
-                  // MOUNTAIN NIGHT SHIFT
-                </p>
+                <div className="absolute inset-0 blur-sm pointer-events-none mix-blend-screen opacity-50">
+                  <motion.div 
+                    animate={{
+                      x: ["0%", "100%", "0%"],
+                      opacity: [0.2, 0.6, 0.2]
+                    }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-0 bottom-0 w-[4px] h-[200%] bg-gradient-to-b from-cyan-400 via-transparent to-transparent origin-top rotate-[25deg]"
+                  />
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30 pointer-events-none" />
+
+                <div className="absolute top-6 left-6 right-6">
+                  <p className="text-xs font-mono uppercase tracking-widest text-[#00F5FF]">
+                    // MOUNTAIN NIGHT SHIFT
+                  </p>
+                </div>
               </div>
-            </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={isHeadingInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                className="relative w-full max-w-[500px] h-[320px] md:h-[420px] bg-neutral-950 border border-neutral-900/80 rounded-[32px] overflow-hidden group shadow-2xl transition-all duration-700 hover:border-[#00F5FF]/60 hover:shadow-[0_0_45px_rgba(0,245,255,0.3)] cursor-pointer"
+              >
+                <img 
+                  src={getAssetPath("/hero_image.webp")} 
+                  alt="Snowboarder climbing mountain in the dark" 
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-[2s] ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:brightness-110 select-none pointer-events-none opacity-80"
+                  referrerPolicy="no-referrer"
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#00F5FF]/5 to-[#00F5FF]/15 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none mix-blend-screen" />
+
+                <div className="absolute inset-0 blur-sm pointer-events-none mix-blend-screen opacity-50">
+                  <motion.div 
+                    animate={{
+                      x: ["0%", "100%", "0%"],
+                      opacity: [0.2, 0.6, 0.2]
+                    }}
+                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute top-0 bottom-0 w-[4px] h-[200%] bg-gradient-to-b from-cyan-400 via-transparent to-transparent origin-top rotate-[25deg]"
+                  />
+                </div>
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30 pointer-events-none" />
+
+                <div className="absolute top-6 left-6 right-6">
+                  <p className="text-xs font-mono uppercase tracking-widest text-[#00F5FF]">
+                    // MOUNTAIN NIGHT SHIFT
+                  </p>
+                </div>
+              </motion.div>
+            )}
           </div>
         </div>
 
         {/* --- LAYER 2: CINEMATIC "NEW RULES" TEXT INTRO SPECTACULAR --- */}
         {/* z-40 pour que le texte puisse grossir et passer PAR-DESSUS la section 2 qui arrive */}
-        <div className={isMobile ? "relative mt-20 flex flex-col justify-center items-center px-6" : "absolute inset-0 flex flex-col justify-center items-center pointer-events-none z-40 px-6"}>
+        <div className="relative lg:absolute lg:inset-0 flex flex-col justify-center items-center px-6 mt-20 lg:mt-0 lg:pointer-events-none z-40">
           <div
-            ref={isMobile ? null : textLayerRef}
+            ref={textLayerRef}
             className="flex flex-col items-center animate-pulse"
             style={isMobile ? { transformStyle: "preserve-3d" } : { willChange: "transform, opacity", transformStyle: "preserve-3d" }}
           >
