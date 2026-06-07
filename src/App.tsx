@@ -81,7 +81,7 @@ export default function App() {
       <div className="relative z-10 bg-black shadow-[0_-30px_60px_rgba(0,0,0,1)] mt-[100vh]">
         <Section01Problem />
 
-        <div className="relative z-30 mt-[-100vh]">
+        <div className="relative z-30 lg:mt-[-100vh]">
           <Section02Revelation />
 
           <Section03TechDetails />
