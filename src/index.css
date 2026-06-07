@@ -1,3 +1,81 @@
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../public/fonts/bebas-neue-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../public/fonts/inter-300.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../public/fonts/inter-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../public/fonts/inter-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../public/fonts/inter-600.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../public/fonts/inter-700.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Readex Pro';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('../public/fonts/readex-pro-300.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Readex Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../public/fonts/readex-pro-400.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Readex Pro';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../public/fonts/readex-pro-500.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Readex Pro';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../public/fonts/readex-pro-600.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Readex Pro';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../public/fonts/readex-pro-700.ttf') format('truetype');
+}
+
 @import "tailwindcss";
 @import "@blossom-carousel/core/style.css";
 
