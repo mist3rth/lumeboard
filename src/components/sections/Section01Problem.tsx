@@ -7,6 +7,8 @@ import { getAssetPath } from "../../utils/assets";
 
 gsap.registerPlugin(ScrollTrigger);
 
+import { useState, useEffect } from "react";
+
 export default function Section01Problem() {
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -14,10 +16,21 @@ export default function Section01Problem() {
   const contentLayerRef = useRef<HTMLDivElement>(null);
   const textLayerRef = useRef<HTMLDivElement>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const isHeadingInView = useInView(sectionRef, { once: false, amount: 0.15 });
 
-  // GSAP SCROLL ANIMATION (Super smooth with scrub)
+  // GSAP SCROLL ANIMATION (Super smooth with scrub - Desktop only)
   useGSAP(() => {
+    if (isMobile) return;
     if (!containerRef.current || !contentLayerRef.current || !textLayerRef.current) return;
 
     // Set initial state for the text layer so it's ready before scroll
@@ -67,13 +80,13 @@ export default function Section01Problem() {
   ];
 
   return (
-    <div ref={containerRef} className="relative h-[250vh] w-full bg-black" id="problem-wrapper">
+    <div ref={containerRef} className={isMobile ? "relative bg-black" : "relative h-[250vh] w-full bg-black"} id="problem-wrapper">
       
       {/* Anchor node for Navbar active tracking */}
       <div id="problem" className="absolute top-0 w-full h-[100vh] pointer-events-none" />
 
-      {/* Sticky Frame Viewer - locks Section 1 static in viewport */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center z-10">
+      {/* Sticky Frame Viewer - locks Section 1 static in viewport on desktop */}
+      <div className={isMobile ? "relative w-full py-24 flex flex-col justify-center" : "sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center z-10"}>
 
         {/* Ambient deep dark background space */}
         <div className="absolute inset-0 bg-gradient-to-b from-black via-neutral-950 to-black pointer-events-none z-0" />
@@ -102,7 +115,7 @@ export default function Section01Problem() {
                 <motion.p
                   key={idx}
                   initial={{ opacity: 0, y: 15 }}
-                  animate={isHeadingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+                  animate={isMobile || isHeadingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
                   transition={{
                     duration: 0.8,
                     delay: idx * 0.12,
@@ -122,7 +135,7 @@ export default function Section01Problem() {
           <div className="lg:col-span-6 w-full flex justify-center items-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
-              animate={isHeadingInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+              animate={isMobile || isHeadingInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
               transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               className="relative w-full max-w-[500px] h-[320px] md:h-[420px] bg-neutral-950 border border-neutral-900/80 rounded-[32px] overflow-hidden group shadow-2xl transition-all duration-700 hover:border-[#00F5FF]/60 hover:shadow-[0_0_45px_rgba(0,245,255,0.3)] cursor-pointer"
             >
@@ -157,14 +170,13 @@ export default function Section01Problem() {
           </div>
         </div>
 
-
         {/* --- LAYER 2: CINEMATIC "NEW RULES" TEXT INTRO SPECTACULAR --- */}
         {/* z-40 pour que le texte puisse grossir et passer PAR-DESSUS la section 2 qui arrive */}
-        <div className="absolute inset-0 flex flex-col justify-center items-center pointer-events-none z-40 px-6">
+        <div className={isMobile ? "relative mt-20 flex flex-col justify-center items-center px-6" : "absolute inset-0 flex flex-col justify-center items-center pointer-events-none z-40 px-6"}>
           <div
-            ref={textLayerRef}
-            className="flex flex-col items-center"
-            style={{ willChange: "transform, opacity", transformStyle: "preserve-3d" }}
+            ref={isMobile ? null : textLayerRef}
+            className="flex flex-col items-center animate-pulse"
+            style={isMobile ? { transformStyle: "preserve-3d" } : { willChange: "transform, opacity", transformStyle: "preserve-3d" }}
           >
             <h2 
               className="text-[12vw] sm:text-[13vw] font-display font-black tracking-tight uppercase leading-none text-center text-white select-none"

@@ -119,6 +119,20 @@ body,
     }
   }
 
+  .carousel-cover-flow-sec03 {
+    --slide-width: 80vw;
+    --slide-gap: 24px;
+    padding-left: calc(50% - 80vw / 2) !important;
+    padding-right: calc(50% - 80vw / 2) !important;
+  }
+  @media (min-width: 640px) {
+    .carousel-cover-flow-sec03 {
+      --slide-width: 320px;
+      padding-left: calc(50% - 320px / 2) !important;
+      padding-right: calc(50% - 320px / 2) !important;
+    }
+  }
+
   .carousel-cover-flow-sec05 {
     --slide-width: 80vw;
     --slide-gap: 16px;

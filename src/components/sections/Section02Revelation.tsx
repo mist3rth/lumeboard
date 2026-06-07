@@ -288,7 +288,7 @@ export default function Section02Revelation() {
                           {/* Détails toujours visibles et colorés */}
                           <div className="mt-3 overflow-hidden">
                             <div 
-                              className="text-xs font-mono tracking-wider flex items-center gap-2.5 bg-black/55 px-3 py-1.5 rounded-lg border transition-all duration-300 w-fit"
+                              className="text-xs font-mono tracking-wider flex items-center gap-2.5 bg-black/55 px-3 py-1.5 rounded-lg border transition-all duration-300 w-full"
                               style={{ 
                                 color: feat.color,
                                 textShadow: `0 0 8px ${feat.color}40`,
